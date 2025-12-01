@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
+import { DEPARTAMENTOS, UBICACIONES, RACKS_PREDEFINIDOS, MARCAS_COMPONENTES, MODELOS_POR_MARCA } from '@/lib/opciones-formularios'
 
 type ComponenteForm = {
   tipo: 'CPU' | 'Monitor' | 'Teclado' | 'Mouse' | ''
@@ -12,11 +13,18 @@ type ComponenteForm = {
   modelo: string
   numero_serie: string
   placa: string
+  marcaCustom: boolean
+  modeloCustom: boolean
 }
 
 export default function NuevoEquipoPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [usuariosExistentes, setUsuariosExistentes] = useState<string[]>([])
+  const [racksExistentes, setRacksExistentes] = useState<string[]>([])
+  const [usuarioCustom, setUsuarioCustom] = useState(false)
+  const [rackCustom, setRackCustom] = useState(false)
+  
   const [formData, setFormData] = useState({
     numero_equipo: '',
     usuario_asignado: '',
@@ -27,16 +35,56 @@ export default function NuevoEquipoPage() {
     observaciones: '',
   })
   const [componentes, setComponentes] = useState<ComponenteForm[]>([
-    { tipo: 'CPU', marca: '', modelo: '', numero_serie: '', placa: '' },
-    { tipo: 'Monitor', marca: '', modelo: '', numero_serie: '', placa: '' },
-    { tipo: 'Teclado', marca: '', modelo: '', numero_serie: '', placa: '' },
-    { tipo: 'Mouse', marca: '', modelo: '', numero_serie: '', placa: '' },
+    { tipo: 'CPU', marca: '', modelo: '', numero_serie: '', placa: '', marcaCustom: false, modeloCustom: false },
+    { tipo: 'Monitor', marca: '', modelo: '', numero_serie: '', placa: '', marcaCustom: false, modeloCustom: false },
+    { tipo: 'Teclado', marca: '', modelo: '', numero_serie: '', placa: '', marcaCustom: false, modeloCustom: false },
+    { tipo: 'Mouse', marca: '', modelo: '', numero_serie: '', placa: '', marcaCustom: false, modeloCustom: false },
   ])
 
-  function updateComponente(index: number, field: keyof ComponenteForm, value: string) {
+  useEffect(() => {
+    loadOpciones()
+  }, [])
+
+  async function loadOpciones() {
+    try {
+      // Cargar usuarios existentes
+      const { data: equipos } = await supabase
+        .from('equipos')
+        .select('usuario_asignado')
+        .not('usuario_asignado', 'is', null)
+      
+      const usuarios = Array.from(new Set(equipos?.map(e => e.usuario_asignado).filter(Boolean) as string[]))
+      setUsuariosExistentes(usuarios)
+
+      // Cargar racks existentes
+      const { data: racks } = await supabase
+        .from('equipos')
+        .select('rack')
+        .not('rack', 'is', null)
+      
+      const racksUnicos = Array.from(new Set(racks?.map(r => r.rack).filter(Boolean) as string[]))
+      setRacksExistentes(racksUnicos)
+    } catch (error) {
+      console.error('Error cargando opciones:', error)
+    }
+  }
+
+  function updateComponente(index: number, field: keyof ComponenteForm, value: string | boolean) {
     const nuevos = [...componentes]
     nuevos[index] = { ...nuevos[index], [field]: value }
+    
+    // Si cambia la marca, resetear modelo y cargar modelos de esa marca
+    if (field === 'marca' && typeof value === 'string') {
+      nuevos[index].modelo = ''
+      nuevos[index].modeloCustom = false
+    }
+    
     setComponentes(nuevos)
+  }
+
+  function getModelosDisponibles(marca: string, tipo: string): string[] {
+    if (!marca || marca === 'Otro') return []
+    return MODELOS_POR_MARCA[marca] || []
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -90,6 +138,8 @@ export default function NuevoEquipoPage() {
     }
   }
 
+  const todosLosRacks = [...RACKS_PREDEFINIDOS, ...racksExistentes.filter(r => !RACKS_PREDEFINIDOS.includes(r))]
+
   return (
     <div>
       <div className="mb-8">
@@ -118,13 +168,46 @@ export default function NuevoEquipoPage() {
 
               <div>
                 <label className="label">Usuario Asignado</label>
-                <input
-                  type="text"
-                  value={formData.usuario_asignado}
-                  onChange={(e) => setFormData({ ...formData, usuario_asignado: e.target.value })}
-                  className="input-field"
-                  placeholder="Nombre del usuario"
-                />
+                {!usuarioCustom ? (
+                  <select
+                    value={formData.usuario_asignado}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setUsuarioCustom(true)
+                        setFormData({ ...formData, usuario_asignado: '' })
+                      } else {
+                        setFormData({ ...formData, usuario_asignado: e.target.value })
+                      }
+                    }}
+                    className="input-field"
+                  >
+                    <option value="">Sin asignar</option>
+                    {usuariosExistentes.map((usuario) => (
+                      <option key={usuario} value={usuario}>{usuario}</option>
+                    ))}
+                    <option value="__custom__">➕ Agregar nuevo usuario</option>
+                  </select>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={formData.usuario_asignado}
+                      onChange={(e) => setFormData({ ...formData, usuario_asignado: e.target.value })}
+                      className="input-field flex-1"
+                      placeholder="Nombre del usuario"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUsuarioCustom(false)
+                        setFormData({ ...formData, usuario_asignado: '' })
+                      }}
+                      className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div>
@@ -145,24 +228,72 @@ export default function NuevoEquipoPage() {
 
               <div>
                 <label className="label">Ubicación</label>
-                <input
-                  type="text"
+                <select
                   value={formData.ubicacion}
                   onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value })}
                   className="input-field"
-                  placeholder="Oficina Principal"
-                />
+                >
+                  {UBICACIONES.map((ubicacion) => (
+                    <option key={ubicacion} value={ubicacion}>{ubicacion}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="label">Departamento</label>
+                <select
+                  value={formData.departamento}
+                  onChange={(e) => setFormData({ ...formData, departamento: e.target.value })}
+                  className="input-field"
+                >
+                  {DEPARTAMENTOS.map((dept) => (
+                    <option key={dept} value={dept}>{dept}</option>
+                  ))}
+                </select>
               </div>
 
               <div>
                 <label className="label">Rack / Punto de Conexión</label>
-                <input
-                  type="text"
-                  value={formData.rack}
-                  onChange={(e) => setFormData({ ...formData, rack: e.target.value })}
-                  className="input-field"
-                  placeholder="Ej: Rack-01, Rack-A, Switch-01"
-                />
+                {!rackCustom ? (
+                  <select
+                    value={formData.rack}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setRackCustom(true)
+                        setFormData({ ...formData, rack: '' })
+                      } else {
+                        setFormData({ ...formData, rack: e.target.value })
+                      }
+                    }}
+                    className="input-field"
+                  >
+                    <option value="">Sin rack</option>
+                    {todosLosRacks.map((rack) => (
+                      <option key={rack} value={rack}>{rack}</option>
+                    ))}
+                    <option value="__custom__">➕ Agregar nuevo rack</option>
+                  </select>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={formData.rack}
+                      onChange={(e) => setFormData({ ...formData, rack: e.target.value })}
+                      className="input-field flex-1"
+                      placeholder="Ej: Rack-01, Rack-A, Switch-01"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setRackCustom(false)
+                        setFormData({ ...formData, rack: '' })
+                      }}
+                      className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
                 <p className="text-xs text-gray-500 mt-1">
                   Rack o punto de conexión de red donde está conectado el equipo
                 </p>
@@ -191,23 +322,92 @@ export default function NuevoEquipoPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="label">Marca</label>
-                      <input
-                        type="text"
-                        value={comp.marca}
-                        onChange={(e) => updateComponente(index, 'marca', e.target.value)}
-                        className="input-field"
-                        placeholder="Ej: VIT, Dell, HP"
-                      />
+                      {!comp.marcaCustom ? (
+                        <select
+                          value={comp.marca}
+                          onChange={(e) => {
+                            if (e.target.value === '__custom__') {
+                              updateComponente(index, 'marcaCustom', true)
+                              updateComponente(index, 'marca', '')
+                            } else {
+                              updateComponente(index, 'marca', e.target.value)
+                            }
+                          }}
+                          className="input-field"
+                        >
+                          <option value="">Sin marca</option>
+                          {MARCAS_COMPONENTES[comp.tipo as keyof typeof MARCAS_COMPONENTES]?.map((marca) => (
+                            <option key={marca} value={marca}>{marca}</option>
+                          ))}
+                          <option value="__custom__">➕ Otra marca</option>
+                        </select>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={comp.marca}
+                            onChange={(e) => updateComponente(index, 'marca', e.target.value)}
+                            className="input-field flex-1"
+                            placeholder="Escribir marca"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateComponente(index, 'marcaCustom', false)
+                              updateComponente(index, 'marca', '')
+                            }}
+                            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="label">Modelo</label>
-                      <input
-                        type="text"
-                        value={comp.modelo}
-                        onChange={(e) => updateComponente(index, 'modelo', e.target.value)}
-                        className="input-field"
-                        placeholder="Ej: VITE-1210-01"
-                      />
+                      {!comp.modeloCustom ? (
+                        <select
+                          value={comp.modelo}
+                          onChange={(e) => {
+                            if (e.target.value === '__custom__') {
+                              updateComponente(index, 'modeloCustom', true)
+                              updateComponente(index, 'modelo', '')
+                            } else {
+                              updateComponente(index, 'modelo', e.target.value)
+                            }
+                          }}
+                          className="input-field"
+                          disabled={!comp.marca || comp.marca === 'Otro'}
+                        >
+                          <option value="">Sin modelo</option>
+                          {getModelosDisponibles(comp.marca, comp.tipo).map((modelo) => (
+                            <option key={modelo} value={modelo}>{modelo}</option>
+                          ))}
+                          {comp.marca && comp.marca !== 'Otro' && (
+                            <option value="__custom__">➕ Otro modelo</option>
+                          )}
+                        </select>
+                      ) : (
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            value={comp.modelo}
+                            onChange={(e) => updateComponente(index, 'modelo', e.target.value)}
+                            className="input-field flex-1"
+                            placeholder="Escribir modelo"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              updateComponente(index, 'modeloCustom', false)
+                              updateComponente(index, 'modelo', '')
+                            }}
+                            className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <label className="label">Número de Serie</label>
@@ -252,4 +452,3 @@ export default function NuevoEquipoPage() {
     </div>
   )
 }
-
