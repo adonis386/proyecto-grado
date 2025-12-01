@@ -46,13 +46,19 @@ export default function Login() {
       <div className="max-w-md w-full">
         <div className="card">
           <div className="text-center mb-8">
-            <div className="relative w-24 h-24 mx-auto mb-4">
-              <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="relative w-24 h-24">
+                <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+              </div>
+              <div className="relative w-24 h-24">
+                <Image src="/unexca-logo.png" alt="UNEXCA Logo" fill className="object-contain" />
+              </div>
             </div>
             <h1 className="text-3xl font-bold text-inn-primary mb-2">
               Inventario IT
             </h1>
             <p className="text-gray-600">Departamento de Informática - INN</p>
+            <p className="text-sm text-gray-500 mt-1">Alianza con UNEXCA</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -107,7 +113,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          © 2025 INN - Proyecto de Grado
+          © 2025 INN - UNEXCA - Proyecto de Grado
         </p>
       </div>
     </div>

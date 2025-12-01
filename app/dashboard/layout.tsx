@@ -79,12 +79,17 @@ export default function DashboardLayout({
               </button>
 
               <div className="flex items-center space-x-3">
-                <div className="relative w-10 h-10">
-                  <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+                <div className="flex items-center space-x-2">
+                  <div className="relative w-10 h-10">
+                    <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+                  </div>
+                  <div className="relative w-10 h-10">
+                    <Image src="/unexca-logo.png" alt="UNEXCA Logo" fill className="object-contain" />
+                  </div>
                 </div>
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-bold text-inn-primary">INN</h1>
-                  <p className="text-xs text-gray-500">Inventario IT</p>
+                  <p className="text-xs text-gray-500">Inventario IT - Alianza UNEXCA</p>
                 </div>
               </div>
             </div>

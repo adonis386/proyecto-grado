@@ -27,8 +27,13 @@ export default function Home() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-inn-light to-white">
         <div className="text-center">
-          <div className="relative w-32 h-32 mx-auto mb-4">
-            <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="relative w-32 h-32">
+              <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
+            </div>
+            <div className="relative w-32 h-32">
+              <Image src="/unexca-logo.png" alt="UNEXCA Logo" fill className="object-contain" />
+            </div>
           </div>
           <p className="text-inn-primary text-xl font-semibold">Cargando...</p>
         </div>
