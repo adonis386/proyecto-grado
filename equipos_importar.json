@@ -1,0 +1,534 @@
+[
+  {
+    "numero_equipo": 1,
+    "usuario_asignado": "Flor Suarez",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VITE-1210-01",
+        "numero_serie": "A000877892",
+        "placa": "01-32385"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": null,
+        "numero_serie": "70065-97D266-01722",
+        "placa": "116576"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": null,
+        "modelo": null,
+        "numero_serie": "XP1315824944",
+        "placa": "01-24237"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": null,
+        "modelo": null,
+        "numero_serie": null,
+        "placa": "X76607204954"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 6,
+    "usuario_asignado": "Alexis Arias",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT2810-02",
+        "numero_serie": "A000136313",
+        "placa": "01-20424"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80PS",
+        "numero_serie": "V1980LW-B",
+        "placa": "01-20365"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-K5313",
+        "numero_serie": "KBE808K102B7A",
+        "placa": "01-26424"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 11,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT-2811002",
+        "numero_serie": "A000136374",
+        "placa": "01-18851"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "19DMT620AMLUNN2",
+        "numero_serie": "C18D7BA010197",
+        "placa": "01-27216"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-R5313",
+        "numero_serie": "KBR808K10583A",
+        "placa": "01-26531"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": "VIT",
+        "modelo": "VC066",
+        "numero_serie": "MS7020C10277A",
+        "placa": null
+      }
+    ]
+  },
+  {
+    "numero_equipo": 16,
+    "usuario_asignado": "Gisella Rondon",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "Vit-E1210-01",
+        "numero_serie": "7000-878019",
+        "placa": "01-26867"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "Samsung",
+        "modelo": "LS16CMYSFUZM",
+        "numero_serie": "EN164915131421W",
+        "placa": "01-21224"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-K5313",
+        "numero_serie": "KBE808K10672A",
+        "placa": "0090N0E020000003"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": null,
+        "modelo": null,
+        "numero_serie": null,
+        "placa": "01-27157"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 2,
+    "usuario_asignado": "Marlene de Mata",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT-E210-001",
+        "numero_serie": "A000877906",
+        "placa": "127236"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80PS",
+        "numero_serie": "V1980LW-B",
+        "placa": "01-20200"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "KB2971",
+        "numero_serie": "KBB316Q4222A002",
+        "placa": "01-19883"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": null,
+        "modelo": null,
+        "numero_serie": "4748",
+        "placa": null
+      }
+    ]
+  },
+  {
+    "numero_equipo": 7,
+    "usuario_asignado": "Genesis Galvis",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT2810-02",
+        "numero_serie": "596012",
+        "placa": "01-26167"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": null,
+        "numero_serie": null,
+        "placa": null
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "IBM",
+        "modelo": "KB0225",
+        "numero_serie": null,
+        "placa": "114137"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": "VIT",
+        "modelo": "DOK-M696",
+        "numero_serie": null,
+        "placa": "M56711K1044OA"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 12,
+    "usuario_asignado": "Marian Leon",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT-E1210-01",
+        "numero_serie": "A000877943",
+        "placa": "01-26340"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80PS",
+        "numero_serie": "V1980LW-B",
+        "placa": "01-20413"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 17,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": []
+  },
+  {
+    "numero_equipo": 3,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VITE1210-01",
+        "numero_serie": "A000873235",
+        "placa": "01-26694"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "LG",
+        "modelo": "W19425T",
+        "numero_serie": "807MXG1133319",
+        "placa": "01-18521"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-K5313",
+        "numero_serie": "KBE801K11422H",
+        "placa": "01-26696"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 8,
+    "usuario_asignado": "Yesenia Rengifo",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT-2810-02",
+        "numero_serie": "A000136444",
+        "placa": "01-019884"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80P3",
+        "numero_serie": "V1980LW-13",
+        "placa": "01-20032"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "IBM",
+        "modelo": "KB0225",
+        "numero_serie": "597678",
+        "placa": "01-14035"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": "VIT",
+        "modelo": "DOK-M696",
+        "numero_serie": "MS0808K1036114",
+        "placa": null
+      }
+    ]
+  },
+  {
+    "numero_equipo": 13,
+    "usuario_asignado": "Rebeca Lares",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT2810-02",
+        "numero_serie": "A000136074",
+        "placa": "619854"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80PS",
+        "numero_serie": "V-1980LW-B",
+        "placa": "01-19840"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "C0915504020020A002",
+        "numero_serie": "KRB316Q440U3A",
+        "placa": "KB-2971"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 18,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": []
+  },
+  {
+    "numero_equipo": 4,
+    "usuario_asignado": "Wendy Diaz",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": null,
+        "numero_serie": null,
+        "placa": "01-31290"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": null,
+        "numero_serie": "C18DABA001760",
+        "placa": "01-27159"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-K5313",
+        "numero_serie": "KBE808K10571A",
+        "placa": "126353"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": "PHILIPS",
+        "modelo": null,
+        "numero_serie": null,
+        "placa": null
+      }
+    ]
+  },
+  {
+    "numero_equipo": 9,
+    "usuario_asignado": "No Operativo",
+    "estado": "No Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT28110-2",
+        "numero_serie": "A00136390",
+        "placa": "01-20382"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "1901-M00006",
+        "numero_serie": "V19EW-B",
+        "placa": "01-26674"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 14,
+    "usuario_asignado": "Rita Balsamiro",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": []
+  },
+  {
+    "numero_equipo": 19,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": []
+  },
+  {
+    "numero_equipo": 5,
+    "usuario_asignado": "Noris Rondon",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VITE1210-01",
+        "numero_serie": "A000877980",
+        "placa": "126331"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80PS",
+        "numero_serie": "V1980LWB",
+        "placa": "01-20245"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "KB2971",
+        "numero_serie": "KBB316Q423914",
+        "placa": "01-19850"
+      },
+      {
+        "tipo": "Mouse",
+        "marca": null,
+        "modelo": null,
+        "numero_serie": "X76607204845",
+        "placa": null
+      }
+    ]
+  },
+  {
+    "numero_equipo": 10,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "VIT2810-02",
+        "numero_serie": "A000136336",
+        "placa": "01-32286"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80P5",
+        "numero_serie": "V1980LW-B",
+        "placa": "01-19909"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "DOK-K5313",
+        "numero_serie": "KBE8081110572A",
+        "placa": "01-26335"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 15,
+    "usuario_asignado": "Isbely Barasarte",
+    "estado": "Operativo",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": [
+      {
+        "tipo": "CPU",
+        "marca": "VIT",
+        "modelo": "Vit-E1210-01",
+        "numero_serie": "7000-877952",
+        "placa": "01-26427"
+      },
+      {
+        "tipo": "Monitor",
+        "marca": "VIT",
+        "modelo": "TFT19W80P3",
+        "numero_serie": "T9AKMSNQH4LUNN3",
+        "placa": "V-198OLW-B"
+      },
+      {
+        "tipo": "Teclado",
+        "marca": "VIT",
+        "modelo": "KB-2971",
+        "numero_serie": "KBB214B40700A",
+        "placa": "C09150402020A002"
+      }
+    ]
+  },
+  {
+    "numero_equipo": 20,
+    "usuario_asignado": null,
+    "estado": "Disponible",
+    "ubicacion": "Oficina Principal",
+    "departamento": "Informática",
+    "componentes": []
+  }
+]
