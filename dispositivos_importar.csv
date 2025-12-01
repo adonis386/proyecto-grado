@@ -1,0 +1,52 @@
+equipo_numero,usuario,tipo_componente,marca,modelo,numero_serie,placa,estado,asignado_a,departamento,ubicacion,nombre
+1,Flor Suarez,CPU,VIT,VITE-1210-01,A000877892,01-32385,En Uso,Flor Suarez,Informática,Oficina Principal,VIT VITE-1210-01 CPU
+1,Flor Suarez,Monitor,VIT,,70065-97D266-01722,116576,En Uso,Flor Suarez,Informática,Oficina Principal,VIT Monitor
+1,Flor Suarez,Teclado,,,XP1315824944,01-24237,En Uso,Flor Suarez,Informática,Oficina Principal,Teclado
+1,Flor Suarez,Mouse,,,,X76607204954,En Uso,Flor Suarez,Informática,Oficina Principal,Mouse
+6,Alexis Arias,CPU,VIT,VIT2810-02,A000136313,01-20424,En Uso,Alexis Arias,Informática,Oficina Principal,VIT VIT2810-02 CPU
+6,Alexis Arias,Monitor,VIT,TFT19W80PS,V1980LW-B,01-20365,En Uso,Alexis Arias,Informática,Oficina Principal,VIT TFT19W80PS Monitor
+6,Alexis Arias,Teclado,VIT,DOK-K5313,KBE808K102B7A,01-26424,En Uso,Alexis Arias,Informática,Oficina Principal,VIT DOK-K5313 Teclado
+11,Sin asignar,CPU,VIT,VIT-2811002,A000136374,01-18851,Disponible,,Informática,Oficina Principal,VIT VIT-2811002 CPU
+11,Sin asignar,Monitor,VIT,19DMT620AMLUNN2,C18D7BA010197,01-27216,Disponible,,Informática,Oficina Principal,VIT 19DMT620AMLUNN2 Monitor
+11,Sin asignar,Teclado,VIT,DOK-R5313,KBR808K10583A,01-26531,Disponible,,Informática,Oficina Principal,VIT DOK-R5313 Teclado
+11,Sin asignar,Mouse,VIT,VC066,MS7020C10277A,,Disponible,,Informática,Oficina Principal,VIT VC066 Mouse
+16,Gisella Rondon,CPU,VIT,Vit-E1210-01,7000-878019,01-26867,En Uso,Gisella Rondon,Informática,Oficina Principal,VIT Vit-E1210-01 CPU
+16,Gisella Rondon,Monitor,Samsung,LS16CMYSFUZM,EN164915131421W,01-21224,En Uso,Gisella Rondon,Informática,Oficina Principal,Samsung LS16CMYSFUZM Monitor
+16,Gisella Rondon,Teclado,VIT,DOK-K5313,KBE808K10672A,0090N0E020000003,En Uso,Gisella Rondon,Informática,Oficina Principal,VIT DOK-K5313 Teclado
+16,Gisella Rondon,Mouse,,,,01-27157,En Uso,Gisella Rondon,Informática,Oficina Principal,Mouse
+2,Marlene de Mata,CPU,VIT,VIT-E210-001,A000877906,127236,En Uso,Marlene de Mata,Informática,Oficina Principal,VIT VIT-E210-001 CPU
+2,Marlene de Mata,Monitor,VIT,TFT19W80PS,V1980LW-B,01-20200,En Uso,Marlene de Mata,Informática,Oficina Principal,VIT TFT19W80PS Monitor
+2,Marlene de Mata,Teclado,VIT,KB2971,KBB316Q4222A002,01-19883,En Uso,Marlene de Mata,Informática,Oficina Principal,VIT KB2971 Teclado
+2,Marlene de Mata,Mouse,,,4748,,En Uso,Marlene de Mata,Informática,Oficina Principal,Mouse
+7,Genesis Galvis,CPU,VIT,VIT2810-02,596012,01-26167,En Uso,Genesis Galvis,Informática,Oficina Principal,VIT VIT2810-02 CPU
+7,Genesis Galvis,Monitor,VIT,,,,En Uso,Genesis Galvis,Informática,Oficina Principal,VIT Monitor
+7,Genesis Galvis,Teclado,IBM,KB0225,,114137,En Uso,Genesis Galvis,Informática,Oficina Principal,IBM KB0225 Teclado
+7,Genesis Galvis,Mouse,VIT,DOK-M696,,M56711K1044OA,En Uso,Genesis Galvis,Informática,Oficina Principal,VIT DOK-M696 Mouse
+12,Marian Leon,CPU,VIT,VIT-E1210-01,A000877943,01-26340,En Uso,Marian Leon,Informática,Oficina Principal,VIT VIT-E1210-01 CPU
+12,Marian Leon,Monitor,VIT,TFT19W80PS,V1980LW-B,01-20413,En Uso,Marian Leon,Informática,Oficina Principal,VIT TFT19W80PS Monitor
+3,SIN USUARIO,CPU,VIT,VITE1210-01,A000873235,01-26694,Disponible,,Informática,Oficina Principal,VIT VITE1210-01 CPU
+3,SIN USUARIO,Monitor,LG,W19425T,807MXG1133319,01-18521,Disponible,,Informática,Oficina Principal,LG W19425T Monitor
+3,SIN USUARIO,Teclado,VIT,DOK-K5313,KBE801K11422H,01-26696,Disponible,,Informática,Oficina Principal,VIT DOK-K5313 Teclado
+8,Yesenia Rengifo,CPU,VIT,VIT-2810-02,A000136444,01-019884,En Uso,Yesenia Rengifo,Informática,Oficina Principal,VIT VIT-2810-02 CPU
+8,Yesenia Rengifo,Monitor,VIT,TFT19W80P3,V1980LW-13,01-20032,En Uso,Yesenia Rengifo,Informática,Oficina Principal,VIT TFT19W80P3 Monitor
+8,Yesenia Rengifo,Teclado,IBM,KB0225,597678,01-14035,En Uso,Yesenia Rengifo,Informática,Oficina Principal,IBM KB0225 Teclado
+8,Yesenia Rengifo,Mouse,VIT,DOK-M696,MS0808K1036114,,En Uso,Yesenia Rengifo,Informática,Oficina Principal,VIT DOK-M696 Mouse
+13,Rebeca Lares,CPU,VIT,VIT2810-02,A000136074,619854,En Uso,Rebeca Lares,Informática,Oficina Principal,VIT VIT2810-02 CPU
+13,Rebeca Lares,Monitor,VIT,TFT19W80PS,V-1980LW-B,01-19840,En Uso,Rebeca Lares,Informática,Oficina Principal,VIT TFT19W80PS Monitor
+13,Rebeca Lares,Teclado,VIT,C0915504020020A002,KRB316Q440U3A,KB-2971,En Uso,Rebeca Lares,Informática,Oficina Principal,VIT C0915504020020A002 Teclado
+4,Wendy Diaz,CPU,VIT,,,01-31290,En Uso,Wendy Diaz,Informática,Oficina Principal,VIT CPU
+4,Wendy Diaz,Monitor,VIT,,C18DABA001760,01-27159,En Uso,Wendy Diaz,Informática,Oficina Principal,VIT Monitor
+4,Wendy Diaz,Teclado,VIT,DOK-K5313,KBE808K10571A,126353,En Uso,Wendy Diaz,Informática,Oficina Principal,VIT DOK-K5313 Teclado
+4,Wendy Diaz,Mouse,PHILIPS,,,,En Uso,Wendy Diaz,Informática,Oficina Principal,PHILIPS Mouse
+9,No Operativo,CPU,VIT,VIT28110-2,A00136390,01-20382,En Uso,No Operativo,Informática,Oficina Principal,VIT VIT28110-2 CPU
+9,No Operativo,Monitor,VIT,1901-M00006,V19EW-B,01-26674,En Uso,No Operativo,Informática,Oficina Principal,VIT 1901-M00006 Monitor
+5,Noris Rondon,CPU,VIT,VITE1210-01,A000877980,126331,En Uso,Noris Rondon,Informática,Oficina Principal,VIT VITE1210-01 CPU
+5,Noris Rondon,Monitor,VIT,TFT19W80PS,V1980LWB,01-20245,En Uso,Noris Rondon,Informática,Oficina Principal,VIT TFT19W80PS Monitor
+5,Noris Rondon,Teclado,VIT,KB2971,KBB316Q423914,01-19850,En Uso,Noris Rondon,Informática,Oficina Principal,VIT KB2971 Teclado
+5,Noris Rondon,Mouse,,,X76607204845,,En Uso,Noris Rondon,Informática,Oficina Principal,Mouse
+10,Sin asignar,CPU,VIT,VIT2810-02,A000136336,01-32286,Disponible,,Informática,Oficina Principal,VIT VIT2810-02 CPU
+10,Sin asignar,Monitor,VIT,TFT19W80P5,V1980LW-B,01-19909,Disponible,,Informática,Oficina Principal,VIT TFT19W80P5 Monitor
+10,Sin asignar,Teclado,VIT,DOK-K5313,KBE8081110572A,01-26335,Disponible,,Informática,Oficina Principal,VIT DOK-K5313 Teclado
+15,Isbely Barasarte,CPU,VIT,Vit-E1210-01,7000-877952,01-26427,En Uso,Isbely Barasarte,Informática,Oficina Principal,VIT Vit-E1210-01 CPU
+15,Isbely Barasarte,Monitor,VIT,TFT19W80P3,T9AKMSNQH4LUNN3,V-198OLW-B,En Uso,Isbely Barasarte,Informática,Oficina Principal,VIT TFT19W80P3 Monitor
+15,Isbely Barasarte,Teclado,VIT,KB-2971,KBB214B40700A,C09150402020A002,En Uso,Isbely Barasarte,Informática,Oficina Principal,VIT KB-2971 Teclado
