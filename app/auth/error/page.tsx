@@ -1,10 +1,11 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function AuthErrorPage() {
+function ErrorContent() {
   const searchParams = useSearchParams()
   const error = searchParams.get('error') || 'Error desconocido'
   const errorDescription = searchParams.get('error_description') || 'Hubo un problema con la autenticación'
@@ -68,6 +69,18 @@ export default function AuthErrorPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-600">Cargando...</p>
+      </div>
+    }>
+      <ErrorContent />
+    </Suspense>
   )
 }
 
