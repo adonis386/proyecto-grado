@@ -6,10 +6,10 @@ import Link from 'next/link'
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
-    totalProductos: 0,
-    totalCategorias: 0,
-    productosDisponibles: 0,
-    productosEnUso: 0,
+    totalEquipos: 0,
+    equiposOperativos: 0,
+    equiposConUsuario: 0,
+    equiposDisponibles: 0,
   })
   const [loading, setLoading] = useState(true)
 
@@ -19,33 +19,34 @@ export default function Dashboard() {
 
   async function loadStats() {
     try {
-      // Contar productos
-      const { count: totalProductos } = await supabase
-        .from('productos')
+      // Contar equipos
+      const { count: totalEquipos } = await supabase
+        .from('equipos')
         .select('*', { count: 'exact', head: true })
 
-      // Contar categorías
-      const { count: totalCategorias } = await supabase
-        .from('categorias')
+      // Contar equipos operativos
+      const { count: equiposOperativos } = await supabase
+        .from('equipos')
         .select('*', { count: 'exact', head: true })
+        .eq('estado', 'Operativo')
 
-      // Contar productos disponibles
-      const { count: productosDisponibles } = await supabase
-        .from('productos')
+      // Contar equipos con usuario
+      const { count: equiposConUsuario } = await supabase
+        .from('equipos')
+        .select('*', { count: 'exact', head: true })
+        .not('usuario_asignado', 'is', null)
+
+      // Contar equipos disponibles
+      const { count: equiposDisponibles } = await supabase
+        .from('equipos')
         .select('*', { count: 'exact', head: true })
         .eq('estado', 'Disponible')
 
-      // Contar productos en uso
-      const { count: productosEnUso } = await supabase
-        .from('productos')
-        .select('*', { count: 'exact', head: true })
-        .eq('estado', 'En Uso')
-
       setStats({
-        totalProductos: totalProductos || 0,
-        totalCategorias: totalCategorias || 0,
-        productosDisponibles: productosDisponibles || 0,
-        productosEnUso: productosEnUso || 0,
+        totalEquipos: totalEquipos || 0,
+        equiposOperativos: equiposOperativos || 0,
+        equiposConUsuario: equiposConUsuario || 0,
+        equiposDisponibles: equiposDisponibles || 0,
       })
     } catch (error) {
       console.error('Error cargando estadísticas:', error)
@@ -60,32 +61,32 @@ export default function Dashboard() {
 
   const statCards = [
     {
-      title: 'Total Productos',
-      value: stats.totalProductos,
+      title: 'Total Equipos',
+      value: stats.totalEquipos,
       icon: '💻',
       color: 'bg-blue-500',
-      link: '/dashboard/productos',
+      link: '/dashboard/equipos',
     },
     {
-      title: 'Categorías',
-      value: stats.totalCategorias,
-      icon: '📁',
+      title: 'Equipos Operativos',
+      value: stats.equiposOperativos,
+      icon: '✅',
+      color: 'bg-green-500',
+      link: '/dashboard/equipos?estado=Operativo',
+    },
+    {
+      title: 'Con Usuario',
+      value: stats.equiposConUsuario,
+      icon: '👤',
       color: 'bg-inn-primary',
-      link: '/dashboard/categorias',
+      link: '/dashboard/equipos?usuario=Con Usuario',
     },
     {
       title: 'Disponibles',
-      value: stats.productosDisponibles,
-      icon: '✅',
-      color: 'bg-green-500',
-      link: '/dashboard/productos?estado=Disponible',
-    },
-    {
-      title: 'En Uso',
-      value: stats.productosEnUso,
-      icon: '🔄',
+      value: stats.equiposDisponibles,
+      icon: '📦',
       color: 'bg-yellow-500',
-      link: '/dashboard/productos?estado=En Uso',
+      link: '/dashboard/equipos?estado=Disponible',
     },
   ]
 
@@ -123,16 +124,16 @@ export default function Dashboard() {
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Acciones Rápidas</h2>
           <div className="space-y-3">
             <Link
-              href="/dashboard/productos/nuevo"
+              href="/dashboard/equipos/nuevo"
               className="block btn-primary text-center text-sm sm:text-base"
             >
-              ➕ Agregar Nuevo Producto
+              ➕ Agregar Nuevo Equipo
             </Link>
             <Link
-              href="/dashboard/categorias"
+              href="/dashboard/equipos"
               className="block btn-secondary text-center text-sm sm:text-base"
             >
-              📁 Gestionar Categorías
+              📋 Ver Todos los Equipos
             </Link>
           </div>
         </div>
