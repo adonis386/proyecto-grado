@@ -12,7 +12,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** Disponible
 - **Ubicación:** Almacén Principal
 - **Fecha de Adquisición:** 2024-01-15
-- **Precio:** 1200.00
 - **Descripción:** Laptop empresarial Intel Core i7, 16GB RAM, 512GB SSD
 
 ### Desktop HP ProDesk 600 G6
@@ -23,7 +22,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Oficina 201
 - **Fecha de Adquisición:** 2023-08-20
-- **Precio:** 850.00
 - **Descripción:** PC de escritorio Intel Core i5, 8GB RAM, 256GB SSD
 
 ### Laptop Lenovo ThinkPad X1 Carbon
@@ -34,7 +32,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** Disponible
 - **Ubicación:** Almacén Principal
 - **Fecha de Adquisición:** 2024-03-10
-- **Precio:** 1450.00
 - **Descripción:** Ultrabook empresarial Intel Core i7, 16GB RAM, 1TB SSD
 
 ---
@@ -49,7 +46,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Oficina 205
 - **Fecha de Adquisición:** 2024-02-05
-- **Precio:** 450.00
 - **Descripción:** Monitor 4K IPS 27 pulgadas
 
 ### Teclado Mecánico Logitech MX Keys
@@ -60,7 +56,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** Disponible
 - **Ubicación:** Almacén Principal
 - **Fecha de Adquisición:** 2024-04-12
-- **Precio:** 120.00
 - **Descripción:** Teclado mecánico inalámbrico retroiluminado
 
 ### Impresora HP LaserJet Pro
@@ -71,7 +66,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Oficina 202
 - **Fecha de Adquisición:** 2023-11-18
-- **Precio:** 550.00
 - **Descripción:** Impresora láser multifunción monocromática
 
 ---
@@ -86,7 +80,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Sala de Servidores
 - **Fecha de Adquisición:** 2023-06-25
-- **Precio:** 380.00
 - **Descripción:** Router VPN Dual WAN Gigabit
 
 ### Switch TP-Link 24 Puertos
@@ -97,7 +90,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Sala de Servidores
 - **Fecha de Adquisición:** 2023-07-10
-- **Precio:** 150.00
 - **Descripción:** Switch Gigabit no administrable 24 puertos
 
 ### Access Point Ubiquiti UniFi
@@ -108,7 +100,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** Disponible
 - **Ubicación:** Almacén Principal
 - **Fecha de Adquisición:** 2024-01-30
-- **Precio:** 180.00
 - **Descripción:** Access Point WiFi AC Dual Band
 
 ---
@@ -123,7 +114,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Sala de Servidores
 - **Fecha de Adquisición:** 2023-05-15
-- **Precio:** 3500.00
 - **Descripción:** Servidor rack Intel Xeon, 32GB RAM, 2x 1TB HDD
 
 ### Servidor HP ProLiant DL380 Gen10
@@ -134,7 +124,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Reparación
 - **Ubicación:** Sala de Servidores
 - **Fecha de Adquisición:** 2022-12-08
-- **Precio:** 4200.00
 - **Descripción:** Servidor rack Intel Xeon, 64GB RAM, 4x 2TB HDD RAID5
 
 ---
@@ -149,7 +138,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** En Uso
 - **Ubicación:** Sala de Servidores
 - **Fecha de Adquisición:** 2023-09-22
-- **Precio:** 650.00
 - **Descripción:** NAS 4 bahías con 4x 4TB HDD
 
 ### Disco Duro Externo WD 4TB
@@ -160,7 +148,6 @@ Si quieres probar el sistema con datos de ejemplo, aquí tienes algunas sugerenc
 - **Estado:** Disponible
 - **Ubicación:** Almacén Principal
 - **Fecha de Adquisición:** 2024-05-05
-- **Precio:** 120.00
 - **Descripción:** Disco duro externo portátil USB 3.0
 
 ---
