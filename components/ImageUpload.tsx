@@ -144,13 +144,13 @@ export default function ImageUpload({
         {uploadMethod === 'file' && (
           <>
             <p className="text-sm text-gray-500 mb-3">
-              Formatos: PNG, JPEG, WEBP • Máximo: 5MB
+              Formatos: PNG, JPG, JPEG, WEBP • Máximo: 5MB
             </p>
             <div className="flex items-center space-x-4">
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/png,image/jpeg,image/jpg,image/webp"
+                accept="image/png,image/jpeg,image/jpg,image/webp,.png,.jpg,.jpeg,.webp"
                 onChange={handleFileChange}
                 className="hidden"
                 id="image-upload"

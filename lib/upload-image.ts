@@ -12,9 +12,15 @@ export async function uploadProductImage(
 ): Promise<string | null> {
   try {
     // Validar tipo de archivo
-    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
-    if (!allowedTypes.includes(file.type)) {
-      throw new Error('Tipo de archivo no permitido. Solo PNG, JPEG y WEBP.')
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/jpe']
+    const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.jpe']
+    
+    const validType = allowedTypes.includes(file.type.toLowerCase())
+    const fileName = file.name.toLowerCase()
+    const validExtension = allowedExtensions.some(ext => fileName.endsWith(ext))
+    
+    if (!validType && !validExtension) {
+      throw new Error('Tipo de archivo no permitido. Solo PNG, JPG, JPEG y WEBP.')
     }
 
     // Validar tamaño (máximo 5MB)
@@ -76,13 +82,21 @@ export async function deleteProductImage(imageUrl: string): Promise<void> {
  * Valida si un archivo es una imagen válida
  */
 export function validateImageFile(file: File): { valid: boolean; error?: string } {
-  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
+  const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/jpe']
+  const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.jpe']
   const maxSize = 5 * 1024 * 1024 // 5MB
 
-  if (!allowedTypes.includes(file.type)) {
+  // Validar por tipo MIME
+  const validType = allowedTypes.includes(file.type.toLowerCase())
+  
+  // Validar por extensión (fallback)
+  const fileName = file.name.toLowerCase()
+  const validExtension = allowedExtensions.some(ext => fileName.endsWith(ext))
+
+  if (!validType && !validExtension) {
     return {
       valid: false,
-      error: 'Tipo de archivo no permitido. Solo PNG, JPEG y WEBP.',
+      error: 'Tipo de archivo no permitido. Solo PNG, JPG, JPEG y WEBP.',
     }
   }
 
