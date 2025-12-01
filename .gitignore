@@ -1,0 +1,58 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files (IMPORTANTE: NO SUBIR CREDENCIALES)
+.env
+.env*.local
+.env.development
+.env.production
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Terminals folder (contiene historial de comandos)
+terminals/
+.cursor/
+
+# Archivos privados con credenciales (NO SUBIR)
+*_PRIVADA.md
+*_PRIVATE.md
+CREDENCIALES.md
+.env.local.backup
+INSTRUCCIONES.md

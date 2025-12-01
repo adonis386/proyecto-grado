@@ -1,0 +1,120 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║                                                                        ║
+║       🌱  SISTEMA DE INVENTARIO INN  🌱                               ║
+║                                                                        ║
+║       Proyecto de Grado - Gestión de Equipos Informáticos            ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+
+¡BIENVENIDO!
+
+Este es tu sistema completo de inventario para INN.
+
+
+📋 INICIO RÁPIDO (4 pasos):
+
+1. 💻 INSTALAR DEPENDENCIAS:
+   - Ejecuta: npm install
+   
+2. 🔐 CONFIGURAR VARIABLES DE ENTORNO:
+   - Copia: .env.example a .env.local
+   - Agrega tus credenciales de Supabase
+   
+3. 🗄️ CONFIGURAR SUPABASE:
+   - Lee: CONFIGURACION_SUPABASE.md
+   - Ejecuta el script SQL en Supabase
+   
+4. 🚀 INICIAR APLICACIÓN:
+   - Ejecuta: npm run dev
+   - Abre: http://localhost:3000
+
+
+📚 DOCUMENTACIÓN COMPLETA:
+
+📖 INSTRUCCIONES.md          → Guía paso a paso detallada
+📖 CONFIGURACION_SUPABASE.md → Cómo configurar Supabase
+📖 SUBIR_A_GITHUB.md         → Cómo subir el proyecto a GitHub
+📖 README.md                 → Documentación técnica completa
+📖 RESUMEN_PROYECTO.md       → Resumen del proyecto y tecnologías
+📖 IMAGENES_PRODUCTOS.md     → Guía de imágenes (archivo/URL)
+📖 DATOS_EJEMPLO.md          → Productos de ejemplo para probar
+📖 DESPLIEGUE.md             → Cómo subir a producción
+
+
+🎯 FUNCIONALIDADES:
+
+✅ Sistema de autenticación
+✅ Panel de administración
+✅ Gestión de categorías
+✅ Gestión de productos/equipos
+✅ Subida de imágenes (archivo o URL)
+✅ Búsqueda y filtros
+✅ Estadísticas en tiempo real
+✅ Interfaz moderna y responsive
+
+
+💡 TECNOLOGÍAS:
+
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Supabase (PostgreSQL)
+
+
+🔒 SEGURIDAD:
+
+⚠️ IMPORTANTE - Antes de subir a GitHub:
+1. NUNCA subas el archivo .env.local (ya está en .gitignore)
+2. Lee: SUBIR_A_GITHUB.md para instrucciones seguras
+3. Las credenciales se comparten de forma privada
+
+
+📞 SOPORTE:
+
+Si tienes problemas:
+1. Lee INSTRUCCIONES.md
+2. Lee CONFIGURACION_SUPABASE.md
+3. Verifica .env.local con tus credenciales
+4. Verifica que ejecutaste el script SQL en Supabase
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+👥 PARA TUS COMPAÑEROS:
+
+Cuando compartas este proyecto:
+1. Súbelo a GitHub (sin credenciales)
+2. Comparte las credenciales por mensaje privado
+3. Cada uno crea su .env.local con las credenciales
+4. Todos pueden agregar y editar productos
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+🎓 PROYECTO DE GRADO
+
+Desarrollado para INN
+Año: 2025
+Versión: 1.0.0
+
+
+═══════════════════════════════════════════════════════════════════════
+
+
+¡PASOS SIGUIENTES!
+
+1. ✅ Crear archivo .env.local con tus credenciales
+2. ✅ Ejecutar: npm install
+3. ✅ Ejecutar script SQL en Supabase
+4. ✅ Iniciar: npm run dev
+
+Lee INSTRUCCIONES.md para detalles completos.
+
+
+═══════════════════════════════════════════════════════════════════════
+
+¡TODO LISTO! Ahora puedes empezar a usar tu sistema de inventario 🎉
