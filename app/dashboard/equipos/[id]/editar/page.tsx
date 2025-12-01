@@ -26,6 +26,7 @@ export default function EditarEquipoPage() {
     estado: 'Operativo',
     ubicacion: '',
     departamento: 'Informática',
+    rack: '',
     observaciones: '',
   })
   const [componentes, setComponentes] = useState<ComponenteForm[]>([
@@ -55,6 +56,7 @@ export default function EditarEquipoPage() {
         estado: equipo.estado,
         ubicacion: equipo.ubicacion,
         departamento: equipo.departamento,
+        rack: equipo.rack || '',
         observaciones: equipo.observaciones || '',
       })
 
@@ -114,6 +116,7 @@ export default function EditarEquipoPage() {
           estado: formData.estado,
           ubicacion: formData.ubicacion,
           departamento: formData.departamento,
+          rack: formData.rack || null,
           observaciones: formData.observaciones || null,
         })
         .eq('id', params.id)
@@ -233,6 +236,20 @@ export default function EditarEquipoPage() {
                   onChange={(e) => setFormData({ ...formData, ubicacion: e.target.value })}
                   className="input-field"
                 />
+              </div>
+
+              <div>
+                <label className="label">Rack / Punto de Conexión</label>
+                <input
+                  type="text"
+                  value={formData.rack}
+                  onChange={(e) => setFormData({ ...formData, rack: e.target.value })}
+                  className="input-field"
+                  placeholder="Ej: Rack-01, Rack-A, Switch-01"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Rack o punto de conexión de red donde está conectado el equipo
+                </p>
               </div>
 
               <div className="md:col-span-2">

@@ -11,6 +11,8 @@ type Equipo = {
   usuario_asignado: string | null
   estado: string
   ubicacion: string
+  departamento: string
+  rack: string | null
   componentes: {
     tipo: string
     marca: string | null
@@ -25,6 +27,11 @@ export default function EquiposPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterEstado, setFilterEstado] = useState('Todos')
   const [filterUsuario, setFilterUsuario] = useState('Todos')
+  const [filterRack, setFilterRack] = useState('Todos')
+  const [filterDepartamento, setFilterDepartamento] = useState('Todos')
+  const [filterModelo, setFilterModelo] = useState('Todos')
+  const [filterMarca, setFilterMarca] = useState('Todos')
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false)
 
   useEffect(() => {
     loadEquipos()
@@ -82,54 +89,120 @@ export default function EquiposPage() {
   }
 
   const filteredEquipos = equipos.filter((equipo) => {
+    // Búsqueda general
     const matchSearch = 
       equipo.numero_equipo.toString().includes(searchTerm) ||
       equipo.usuario_asignado?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipo.departamento?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      equipo.rack?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       equipo.componentes.some(c => 
         c.marca?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.modelo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c.numero_serie?.toLowerCase().includes(searchTerm.toLowerCase())
       )
     
+    // Filtros específicos
     const matchEstado = filterEstado === 'Todos' || equipo.estado === filterEstado
     const matchUsuario = filterUsuario === 'Todos' || 
       (filterUsuario === 'Con Usuario' && equipo.usuario_asignado) ||
       (filterUsuario === 'Sin Usuario' && !equipo.usuario_asignado) ||
       equipo.usuario_asignado === filterUsuario
+    const matchRack = filterRack === 'Todos' || equipo.rack === filterRack || 
+      (filterRack === 'Sin Rack' && !equipo.rack)
+    const matchDepartamento = filterDepartamento === 'Todos' || equipo.departamento === filterDepartamento
+    const matchModelo = filterModelo === 'Todos' || 
+      equipo.componentes.some(c => c.modelo === filterModelo)
+    const matchMarca = filterMarca === 'Todos' || 
+      equipo.componentes.some(c => c.marca === filterMarca)
 
-    return matchSearch && matchEstado && matchUsuario
+    return matchSearch && matchEstado && matchUsuario && matchRack && 
+           matchDepartamento && matchModelo && matchMarca
   })
 
   if (loading) {
     return <div className="text-center py-12">Cargando equipos...</div>
   }
 
+  // Obtener valores únicos para los filtros
   const estados = ['Todos', 'Operativo', 'Disponible', 'No Operativo', 'En Reparación', 'En Mantenimiento']
-  const usuarios = ['Todos', 'Con Usuario', 'Sin Usuario', ...Array.from(new Set(equipos.map(e => e.usuario_asignado).filter(Boolean)))]
+  const usuarios: string[] = ['Todos', 'Con Usuario', 'Sin Usuario', ...Array.from(new Set(equipos.map(e => e.usuario_asignado).filter((u): u is string => Boolean(u))))]
+  const racks: string[] = ['Todos', 'Sin Rack', ...Array.from(new Set(equipos.map(e => e.rack).filter((r): r is string => Boolean(r))))]
+  const departamentos: string[] = ['Todos', ...Array.from(new Set(equipos.map(e => e.departamento).filter(Boolean)))]
+  const modelos: string[] = ['Todos', ...Array.from(new Set(equipos.flatMap(e => e.componentes.map(c => c.modelo).filter((m): m is string => Boolean(m)))))]
+  const marcas: string[] = ['Todos', ...Array.from(new Set(equipos.flatMap(e => e.componentes.map(c => c.marca).filter((m): m is string => Boolean(m)))))]
 
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Equipos de Cómputo</h1>
-          <p className="text-sm sm:text-base text-gray-600">Gestión de equipos completos del departamento IT</p>
+          <p className="text-sm sm:text-base text-gray-600">
+            Gestión de equipos completos del departamento IT - Búsqueda por usuario, rack, departamento y componentes
+          </p>
         </div>
         <Link href="/dashboard/equipos/nuevo" className="btn-primary text-center whitespace-nowrap">
           ➕ Nuevo Equipo
         </Link>
       </div>
 
-      {/* Filtros */}
-      <div className="card mb-6">
+      {/* Búsqueda Rápida - Casos de Uso Específicos */}
+      <div className="card mb-6 bg-blue-50 border-blue-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">🔍 Búsqueda Rápida</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="label text-sm">Buscar por Usuario</label>
+            <input
+              type="text"
+              placeholder="Ej: Juan Pérez"
+              className="input-field"
+              onChange={(e) => {
+                setSearchTerm(e.target.value)
+                setFilterUsuario('Todos')
+              }}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Encuentra el equipo, departamento y rack de un usuario
+            </p>
+          </div>
+          <div>
+            <label className="label text-sm">Buscar por Rack</label>
+            <input
+              type="text"
+              placeholder="Ej: Rack-01, Rack-A, etc."
+              className="input-field"
+              onChange={(e) => {
+                setSearchTerm(e.target.value)
+                setFilterRack('Todos')
+              }}
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              Ver todos los equipos conectados a un rack específico
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Filtros Básicos */}
+      <div className="card mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Filtros</h3>
+          <button
+            onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+            className="text-sm text-inn-primary hover:text-inn-dark font-medium"
+          >
+            {showAdvancedFilters ? '▲ Ocultar' : '▼ Mostrar'} Filtros Avanzados
+          </button>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="label">Buscar</label>
+            <label className="label">Búsqueda General</label>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="input-field"
-              placeholder="Número, usuario, marca, modelo, serie..."
+              placeholder="Usuario, rack, marca, modelo, serie..."
             />
           </div>
           <div>
@@ -161,6 +234,90 @@ export default function EquiposPage() {
             </select>
           </div>
         </div>
+
+        {/* Filtros Avanzados */}
+        {showAdvancedFilters && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 pt-4 border-t">
+            <div>
+              <label className="label">Rack</label>
+              <select
+                value={filterRack}
+                onChange={(e) => setFilterRack(e.target.value)}
+                className="input-field"
+              >
+                {racks.map((rack) => (
+                  <option key={rack} value={rack}>
+                    {rack}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">Departamento</label>
+              <select
+                value={filterDepartamento}
+                onChange={(e) => setFilterDepartamento(e.target.value)}
+                className="input-field"
+              >
+                {departamentos.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">Marca Componente</label>
+              <select
+                value={filterMarca}
+                onChange={(e) => setFilterMarca(e.target.value)}
+                className="input-field"
+              >
+                {marcas.map((marca) => (
+                  <option key={marca} value={marca}>
+                    {marca}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="label">Modelo Componente</label>
+              <select
+                value={filterModelo}
+                onChange={(e) => setFilterModelo(e.target.value)}
+                className="input-field"
+              >
+                {modelos.map((modelo) => (
+                  <option key={modelo} value={modelo}>
+                    {modelo}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* Botón Limpiar Filtros */}
+        {(searchTerm || filterEstado !== 'Todos' || filterUsuario !== 'Todos' || 
+          filterRack !== 'Todos' || filterDepartamento !== 'Todos' || 
+          filterModelo !== 'Todos' || filterMarca !== 'Todos') && (
+          <div className="mt-4">
+            <button
+              onClick={() => {
+                setSearchTerm('')
+                setFilterEstado('Todos')
+                setFilterUsuario('Todos')
+                setFilterRack('Todos')
+                setFilterDepartamento('Todos')
+                setFilterModelo('Todos')
+                setFilterMarca('Todos')
+              }}
+              className="text-sm text-red-600 hover:text-red-800 font-medium"
+            >
+              ✕ Limpiar todos los filtros
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Vista Desktop: Tabla */}
@@ -171,9 +328,10 @@ export default function EquiposPage() {
               <tr>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Equipo #</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Usuario</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Departamento</th>
+                <th className="px-6 py-3 text-left text-sm font-semibold">Rack</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Componentes</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Estado</th>
-                <th className="px-6 py-3 text-left text-sm font-semibold">Ubicación</th>
                 <th className="px-6 py-3 text-center text-sm font-semibold">Acciones</th>
               </tr>
             </thead>
@@ -187,6 +345,18 @@ export default function EquiposPage() {
                     <div className="font-semibold text-gray-900">
                       {equipo.usuario_asignado || <span className="text-gray-400">Sin asignar</span>}
                     </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-700">
+                    {equipo.departamento}
+                  </td>
+                  <td className="px-6 py-4">
+                    {equipo.rack ? (
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+                        🔌 {equipo.rack}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400 text-sm">Sin rack</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-2">
@@ -209,9 +379,6 @@ export default function EquiposPage() {
                     }`}>
                       {equipo.estado}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-700">
-                    {equipo.ubicacion}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center space-x-2">
@@ -252,6 +419,7 @@ export default function EquiposPage() {
                 <p className="text-sm text-gray-600">
                   {equipo.usuario_asignado || <span className="text-gray-400">Sin asignar</span>}
                 </p>
+                <p className="text-xs text-gray-500 mt-1">{equipo.departamento}</p>
               </div>
               <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                 equipo.estado === 'Operativo' ? 'bg-green-100 text-green-800' :
@@ -263,12 +431,21 @@ export default function EquiposPage() {
               </span>
             </div>
 
+            {equipo.rack && (
+              <div className="mb-3">
+                <p className="text-xs font-medium text-gray-500 mb-1">Rack:</p>
+                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+                  🔌 {equipo.rack}
+                </span>
+              </div>
+            )}
+
             <div className="mb-3">
               <p className="text-xs font-medium text-gray-500 mb-1">Componentes:</p>
               <div className="flex flex-wrap gap-2">
                 {equipo.componentes.map((comp, idx) => (
                   <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                    {comp.tipo}
+                    {comp.tipo}: {comp.marca || 'N/A'} {comp.modelo || ''}
                   </span>
                 ))}
                 {equipo.componentes.length === 0 && (
@@ -304,11 +481,15 @@ export default function EquiposPage() {
       {filteredEquipos.length === 0 && (
         <div className="text-center py-12">
           <p className="text-gray-500 text-lg mb-4">
-            {searchTerm || filterEstado !== 'Todos' || filterUsuario !== 'Todos'
+            {searchTerm || filterEstado !== 'Todos' || filterUsuario !== 'Todos' ||
+             filterRack !== 'Todos' || filterDepartamento !== 'Todos' ||
+             filterModelo !== 'Todos' || filterMarca !== 'Todos'
               ? 'No se encontraron equipos con los filtros aplicados'
               : 'No hay equipos registrados'}
           </p>
-          {!searchTerm && filterEstado === 'Todos' && filterUsuario === 'Todos' && (
+          {!searchTerm && filterEstado === 'Todos' && filterUsuario === 'Todos' && 
+           filterRack === 'Todos' && filterDepartamento === 'Todos' &&
+           filterModelo === 'Todos' && filterMarca === 'Todos' && (
             <Link href="/dashboard/equipos/nuevo" className="btn-primary">
               Crear Primer Equipo
             </Link>
@@ -322,4 +503,3 @@ export default function EquiposPage() {
     </div>
   )
 }
-

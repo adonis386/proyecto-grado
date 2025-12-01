@@ -7,6 +7,7 @@ export type Equipo = {
   estado: EstadoEquipo
   ubicacion: string
   departamento: string
+  rack: string | null
   observaciones: string | null
   created_at: string
   updated_at: string

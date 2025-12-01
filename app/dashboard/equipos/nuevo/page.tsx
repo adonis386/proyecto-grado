@@ -23,6 +23,7 @@ export default function NuevoEquipoPage() {
     estado: 'Operativo',
     ubicacion: 'Oficina Principal',
     departamento: 'Informática',
+    rack: '',
     observaciones: '',
   })
   const [componentes, setComponentes] = useState<ComponenteForm[]>([
@@ -52,6 +53,7 @@ export default function NuevoEquipoPage() {
           estado: formData.estado,
           ubicacion: formData.ubicacion,
           departamento: formData.departamento,
+          rack: formData.rack || null,
           observaciones: formData.observaciones || null,
         }])
         .select()
@@ -150,6 +152,20 @@ export default function NuevoEquipoPage() {
                   className="input-field"
                   placeholder="Oficina Principal"
                 />
+              </div>
+
+              <div>
+                <label className="label">Rack / Punto de Conexión</label>
+                <input
+                  type="text"
+                  value={formData.rack}
+                  onChange={(e) => setFormData({ ...formData, rack: e.target.value })}
+                  className="input-field"
+                  placeholder="Ej: Rack-01, Rack-A, Switch-01"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Rack o punto de conexión de red donde está conectado el equipo
+                </p>
               </div>
 
               <div className="md:col-span-2">

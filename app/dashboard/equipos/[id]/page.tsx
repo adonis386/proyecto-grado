@@ -13,6 +13,7 @@ type Equipo = {
   estado: string
   ubicacion: string
   departamento: string
+  rack: string | null
   observaciones: string | null
   created_at: string
   updated_at: string
@@ -168,6 +169,16 @@ export default function EquipoDetailPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Departamento</p>
                 <p className="font-semibold text-gray-900">{equipo.departamento}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 mb-1">Rack / Punto de Conexión</p>
+                {equipo.rack ? (
+                  <span className="inline-flex px-3 py-1 text-sm font-semibold rounded bg-blue-100 text-blue-800">
+                    🔌 {equipo.rack}
+                  </span>
+                ) : (
+                  <span className="text-gray-400">Sin rack asignado</span>
+                )}
               </div>
               {equipo.observaciones && (
                 <div className="col-span-2">
