@@ -52,6 +52,7 @@ export default function DashboardLayout({
   const menuItems = [
     { href: '/dashboard', label: 'Inicio', icon: '🏠' },
     { href: '/dashboard/equipos', label: 'Equipos', icon: '💻' },
+    { href: '/dashboard/tickets', label: 'Tickets', icon: '🎫' },
     { href: '/dashboard/inventario', label: 'Inventario', icon: '📦' },
     { href: '/dashboard/categorias', label: 'Categorías', icon: '📁' },
   ]
