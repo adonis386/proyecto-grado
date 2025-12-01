@@ -33,7 +33,6 @@ export default function EditarProductoPage() {
     estado: 'Disponible',
     ubicacion: '',
     fecha_adquisicion: '',
-    precio: '',
   })
 
   useEffect(() => {
@@ -70,7 +69,6 @@ export default function EditarProductoPage() {
         estado: data.estado,
         ubicacion: data.ubicacion || '',
         fecha_adquisicion: data.fecha_adquisicion || '',
-        precio: data.precio?.toString() || '',
       })
       setCurrentImageUrl(data.imagen_url)
     } catch (error: any) {
@@ -120,7 +118,6 @@ export default function EditarProductoPage() {
         .from('productos')
         .update({
           ...formData,
-          precio: formData.precio ? parseFloat(formData.precio) : null,
           imagen_url: finalImageUrl,
         })
         .eq('id', params.id)
@@ -262,18 +259,6 @@ export default function EditarProductoPage() {
                 value={formData.fecha_adquisicion}
                 onChange={(e) => setFormData({ ...formData, fecha_adquisicion: e.target.value })}
                 className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="label">Precio (USD)</label>
-              <input
-                type="number"
-                step="0.01"
-                value={formData.precio}
-                onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
-                className="input-field"
-                placeholder="0.00"
               />
             </div>
           </div>

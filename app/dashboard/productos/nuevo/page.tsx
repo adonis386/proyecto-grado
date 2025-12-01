@@ -29,7 +29,6 @@ export default function NuevoProductoPage() {
     estado: 'Disponible',
     ubicacion: '',
     fecha_adquisicion: '',
-    precio: '',
   })
 
   useEffect(() => {
@@ -67,7 +66,6 @@ export default function NuevoProductoPage() {
         .from('productos')
         .insert([{
           ...formData,
-          precio: formData.precio ? parseFloat(formData.precio) : null,
           imagen_url: finalImageUrl,
         }])
 
@@ -198,18 +196,6 @@ export default function NuevoProductoPage() {
                 value={formData.fecha_adquisicion}
                 onChange={(e) => setFormData({ ...formData, fecha_adquisicion: e.target.value })}
                 className="input-field"
-              />
-            </div>
-
-            <div>
-              <label className="label">Precio (USD)</label>
-              <input
-                type="number"
-                step="0.01"
-                value={formData.precio}
-                onChange={(e) => setFormData({ ...formData, precio: e.target.value })}
-                className="input-field"
-                placeholder="0.00"
               />
             </div>
           </div>

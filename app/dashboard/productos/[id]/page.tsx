@@ -91,13 +91,6 @@ export default function ProductoDetailPage() {
     })
   }
 
-  const formatPrice = (price: number | null) => {
-    if (!price) return '-'
-    return new Intl.NumberFormat('es-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(price)
-  }
 
   return (
     <div>
@@ -196,10 +189,6 @@ export default function ProductoDetailPage() {
               <div>
                 <p className="text-sm text-gray-500 mb-1">Ubicación</p>
                 <p className="font-semibold text-gray-900">{producto.ubicacion || '-'}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500 mb-1">Precio</p>
-                <p className="font-semibold text-gray-900">{formatPrice(producto.precio)}</p>
               </div>
             </div>
           </div>
