@@ -16,8 +16,8 @@ export async function uploadProductImage(
     const allowedExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.jpe']
     
     const validType = allowedTypes.includes(file.type.toLowerCase())
-    const fileName = file.name.toLowerCase()
-    const validExtension = allowedExtensions.some(ext => fileName.endsWith(ext))
+    const fileNameLower = file.name.toLowerCase()
+    const validExtension = allowedExtensions.some(ext => fileNameLower.endsWith(ext))
     
     if (!validType && !validExtension) {
       throw new Error('Tipo de archivo no permitido. Solo PNG, JPG, JPEG y WEBP.')
