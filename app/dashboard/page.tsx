@@ -92,9 +92,9 @@ export default function Dashboard() {
   return (
     <div>
       <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Panel de Control</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Panel de Control IT</h1>
         <p className="text-sm sm:text-base text-gray-600">
-          Bienvenido al sistema de gestión de inventario de equipos informáticos
+          Departamento de Informática - Control de Dispositivos y Equipos
         </p>
       </div>
 

@@ -50,9 +50,9 @@ export default function Login() {
               <Image src="/logo.png" alt="INN Logo" fill className="object-contain" />
             </div>
             <h1 className="text-3xl font-bold text-inn-primary mb-2">
-              Sistema de Inventario
+              Inventario IT
             </h1>
-            <p className="text-gray-600">Gestión de equipos informáticos</p>
+            <p className="text-gray-600">Departamento de Informática - INN</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">

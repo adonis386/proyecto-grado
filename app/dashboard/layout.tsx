@@ -82,7 +82,7 @@ export default function DashboardLayout({
                 </div>
                 <div className="hidden sm:block">
                   <h1 className="text-xl font-bold text-inn-primary">INN</h1>
-                  <p className="text-xs text-gray-500">Sistema de Inventario</p>
+                  <p className="text-xs text-gray-500">Inventario IT</p>
                 </div>
               </div>
             </div>

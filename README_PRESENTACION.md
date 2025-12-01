@@ -1,8 +1,8 @@
-# 🌱 Sistema de Gestión de Inventario INN
+# 💻 Sistema de Inventario de Dispositivos IT - INN
 
 **Proyecto de Grado**  
 **Desarrollador:** Adonis  
-**Organización:** INN  
+**Organización:** INN - Departamento de Informática  
 **Año:** 2025  
 **Repositorio:** [github.com/adonis386/proyecto-grado](https://github.com/adonis386/proyecto-grado)  
 **Demo en vivo:** [proyecto-grado-green.vercel.app](https://proyecto-grado-green.vercel.app)
@@ -11,55 +11,69 @@
 
 ## 📋 Resumen Ejecutivo
 
-Sistema web moderno para la gestión y control de inventario de equipos informáticos, desarrollado específicamente para la organización INN. La aplicación permite administrar de forma eficiente el registro, seguimiento y control de activos tecnológicos mediante una interfaz intuitiva y responsive.
+Sistema web especializado para la gestión y control de inventario de dispositivos informáticos del Departamento de TI de INN. La aplicación permite administrar de forma eficiente el registro, seguimiento, asignación y control de todos los activos tecnológicos del departamento mediante una interfaz intuitiva y responsive.
 
 ### Problemática Abordada
 
-Las organizaciones enfrentan desafíos significativos en el control de su inventario de equipos informáticos:
-- Falta de centralización de información
-- Dificultad para rastrear ubicaciones y estados de equipos
-- Ausencia de historial de cambios
-- Procesos manuales propensos a errores
-- Falta de acceso remoto a la información
+Los departamentos de informática enfrentan desafíos significativos en el control de sus dispositivos:
+- Falta de centralización de información de equipos y dispositivos
+- Dificultad para rastrear ubicaciones, asignaciones y estados
+- Control manual de garantías y mantenimientos
+- Procesos de asignación y devolución no documentados
+- Ausencia de historial de cambios y movimientos
+- Falta de acceso remoto y colaborativo a la información
+- Inventarios desactualizados o en hojas de cálculo dispersas
 
 ### Solución Propuesta
 
-Sistema web integral que:
-- ✅ Centraliza toda la información de equipos en una base de datos en la nube
-- ✅ Permite acceso desde cualquier dispositivo con conexión a internet
-- ✅ Proporciona búsqueda y filtrado avanzado
-- ✅ Mantiene registro de estados y ubicaciones
-- ✅ Facilita la colaboración entre múltiples usuarios
-- ✅ Ofrece gestión visual mediante imágenes de productos
+Sistema web integral específico para departamentos de IT que:
+- ✅ Centraliza información de todos los dispositivos informáticos en la nube
+- ✅ Permite acceso desde cualquier ubicación con conexión a internet
+- ✅ Facilita asignación y seguimiento de equipos a usuarios/áreas
+- ✅ Gestiona garantías con alertas de vencimiento
+- ✅ Registra especificaciones técnicas detalladas
+- ✅ Controla estados (Disponible, En Uso, En Reparación, En Mantenimiento)
+- ✅ Mantiene historial de proveedores y facturas
+- ✅ Facilita colaboración entre el equipo de IT
+- ✅ Ofrece gestión visual mediante imágenes de dispositivos
 
 ---
 
 ## 🎯 Objetivos del Proyecto
 
 ### Objetivo General
-Desarrollar un sistema web de gestión de inventario de equipos informáticos que permita a la organización INN administrar eficientemente sus activos tecnológicos mediante una plataforma centralizada, segura y accesible.
+Desarrollar un sistema web especializado de gestión de inventario de dispositivos informáticos que permita al Departamento de IT de INN administrar eficientemente todos sus activos tecnológicos mediante una plataforma centralizada, segura, accesible y colaborativa.
 
 ### Objetivos Específicos
 
-1. **Gestión de Datos**
-   - Implementar CRUD completo para productos y categorías
-   - Permitir registro de información detallada de cada equipo
-   - Gestionar imágenes asociadas a los productos
+1. **Gestión Integral de Dispositivos IT**
+   - Implementar CRUD completo para dispositivos y categorías
+   - Registrar información técnica detallada (especificaciones, garantías, proveedores)
+   - Controlar asignaciones de equipos a usuarios y áreas
+   - Gestionar imágenes y documentación visual de dispositivos
 
-2. **Accesibilidad y Usabilidad**
-   - Diseñar interfaz responsive para múltiples dispositivos
-   - Implementar sistema de búsqueda y filtrado eficiente
-   - Crear dashboard con estadísticas en tiempo real
+2. **Control Operativo del Departamento**
+   - Rastrear estados de dispositivos (Disponible, En Uso, En Reparación, etc.)
+   - Monitorear vencimientos de garantías
+   - Registrar proveedores y números de factura
+   - Mantener observaciones y notas técnicas
 
-3. **Seguridad**
-   - Implementar sistema de autenticación robusto
-   - Establecer control de acceso mediante usuarios
-   - Asegurar datos mediante encriptación
+3. **Accesibilidad y Usabilidad**
+   - Diseñar interfaz responsive para uso en campo (tablets, móviles)
+   - Implementar búsqueda por múltiples criterios (serie, marca, asignado a)
+   - Crear dashboard con métricas del departamento IT
+   - Facilitar acceso rápido a información crítica
 
-4. **Escalabilidad**
-   - Utilizar arquitectura moderna y mantenible
-   - Implementar base de datos en la nube
-   - Preparar sistema para crecimiento futuro
+4. **Seguridad y Colaboración**
+   - Sistema de autenticación para personal de IT
+   - Control de acceso mediante usuarios autenticados
+   - Permitir trabajo colaborativo del equipo
+   - Asegurar datos mediante políticas de seguridad
+
+5. **Escalabilidad Técnica**
+   - Arquitectura moderna preparada para crecimiento
+   - Base de datos en la nube con backup automático
+   - Integración futura con sistemas ITSM
 
 ---
 

@@ -6,8 +6,8 @@ import { Toaster } from 'react-hot-toast'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'INN - Sistema de Inventario',
-  description: 'Sistema de gestión de inventario de equipos informáticos para INN',
+  title: 'INN - Inventario IT',
+  description: 'Sistema de gestión de inventario de dispositivos informáticos - Departamento de IT',
 }
 
 export default function RootLayout({
