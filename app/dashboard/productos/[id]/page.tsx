@@ -18,6 +18,7 @@ type Producto = {
   ubicacion: string | null
   fecha_adquisicion: string | null
   precio: number | null
+  imagen_url: string | null
   created_at: string
   updated_at: string
   categorias: {
