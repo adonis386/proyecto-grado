@@ -90,12 +90,12 @@ export default function ProductosPage() {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Productos</h1>
-          <p className="text-gray-600">Gestiona el inventario de equipos informáticos</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Productos</h1>
+          <p className="text-sm sm:text-base text-gray-600">Gestiona el inventario de equipos informáticos</p>
         </div>
-        <Link href="/dashboard/productos/nuevo" className="btn-primary">
+        <Link href="/dashboard/productos/nuevo" className="btn-primary text-center whitespace-nowrap">
           ➕ Nuevo Producto
         </Link>
       </div>
@@ -130,8 +130,10 @@ export default function ProductosPage() {
         </div>
       </div>
 
-      {/* Lista de productos */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      {/* Lista de productos - Desktop: Tabla, Mobile: Cards */}
+      
+      {/* Vista Desktop (oculta en móvil) */}
+      <div className="hidden lg:block bg-white rounded-lg shadow-md overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-inn-primary text-white">
@@ -223,6 +225,88 @@ export default function ProductosPage() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Vista Mobile (oculta en desktop) */}
+      <div className="lg:hidden space-y-4">
+        {filteredProductos.map((producto) => (
+          <div key={producto.id} className="card">
+            <div className="flex gap-4">
+              {/* Imagen */}
+              {producto.imagen_url ? (
+                <div className="relative w-20 h-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                  <Image
+                    src={producto.imagen_url}
+                    alt={producto.nombre}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              ) : (
+                <div className="w-20 h-20 flex-shrink-0 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
+                  <span className="text-3xl">📦</span>
+                </div>
+              )}
+
+              {/* Información */}
+              <div className="flex-1 min-w-0">
+                <h3 className="font-bold text-gray-900 truncate">{producto.nombre}</h3>
+                <p className="text-sm text-gray-600 truncate">{producto.categorias.nombre}</p>
+                <div className="mt-2">
+                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    producto.estado === 'Disponible' ? 'bg-green-100 text-green-800' :
+                    producto.estado === 'En Uso' ? 'bg-yellow-100 text-yellow-800' :
+                    producto.estado === 'En Reparación' ? 'bg-orange-100 text-orange-800' :
+                    'bg-red-100 text-red-800'
+                  }`}>
+                    {producto.estado}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Detalles adicionales */}
+            <div className="mt-3 pt-3 border-t border-gray-200 space-y-1 text-sm">
+              {producto.marca && (
+                <p className="text-gray-600">
+                  <span className="font-medium">Marca:</span> {producto.marca} {producto.modelo}
+                </p>
+              )}
+              {producto.numero_serie && (
+                <p className="text-gray-600">
+                  <span className="font-medium">Serie:</span> <span className="font-mono text-xs">{producto.numero_serie}</span>
+                </p>
+              )}
+              {producto.ubicacion && (
+                <p className="text-gray-600">
+                  <span className="font-medium">Ubicación:</span> {producto.ubicacion}
+                </p>
+              )}
+            </div>
+
+            {/* Acciones */}
+            <div className="mt-4 flex gap-2">
+              <Link
+                href={`/dashboard/productos/${producto.id}`}
+                className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 px-3 rounded-lg text-sm font-semibold text-center"
+              >
+                Ver
+              </Link>
+              <Link
+                href={`/dashboard/productos/${producto.id}/editar`}
+                className="flex-1 btn-primary text-sm text-center"
+              >
+                Editar
+              </Link>
+              <button
+                onClick={() => handleDelete(producto.id)}
+                className="px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm font-semibold"
+              >
+                🗑️
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       {filteredProductos.length === 0 && (
