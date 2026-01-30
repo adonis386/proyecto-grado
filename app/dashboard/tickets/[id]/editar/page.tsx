@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
-import { ESTADOS_TICKET, TIPOS_TICKET, PRIORIDADES_TICKET } from '@/lib/supabase-tickets'
+import { ESTADOS_TICKET, TIPOS_TICKET, PRIORIDADES_TICKET, type TipoTicket } from '@/lib/supabase-tickets'
 
 export default function EditarTicketPage() {
   const params = useParams()
@@ -17,7 +17,7 @@ export default function EditarTicketPage() {
   const [formData, setFormData] = useState<{
     usuario_solicitante: string
     equipo_id: string
-    tipo: 'Falla' | 'Cambio' | 'Mantenimiento' | 'Consulta' | 'Otro'
+    tipo: TipoTicket
     estado: 'Abierto' | 'En Proceso' | 'Resuelto' | 'Cerrado' | 'Cancelado'
     prioridad: 'Baja' | 'Media' | 'Alta' | 'Urgente'
     titulo: string
@@ -28,7 +28,7 @@ export default function EditarTicketPage() {
   }>({
     usuario_solicitante: '',
     equipo_id: '',
-    tipo: 'Falla',
+    tipo: 'Conectividad' as TipoTicket,
     estado: 'Abierto',
     prioridad: 'Media',
     titulo: '',

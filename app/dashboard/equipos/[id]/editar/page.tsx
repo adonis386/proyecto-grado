@@ -23,13 +23,14 @@ export default function EditarEquipoPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [loadingData, setLoadingData] = useState(true)
-  const [usuariosExistentes, setUsuariosExistentes] = useState<string[]>([])
+  const [empleados, setEmpleados] = useState<{ id: string; nombre_completo: string }[]>([])
   const [racksExistentes, setRacksExistentes] = useState<string[]>([])
   const [usuarioCustom, setUsuarioCustom] = useState(false)
   const [rackCustom, setRackCustom] = useState(false)
   
   const [formData, setFormData] = useState({
     numero_equipo: '',
+    empleado_id: '',
     usuario_asignado: '',
     estado: 'Operativo',
     ubicacion: '',
@@ -51,14 +52,13 @@ export default function EditarEquipoPage() {
 
   async function loadOpciones() {
     try {
-      // Cargar usuarios existentes
-      const { data: equipos } = await supabase
-        .from('equipos')
-        .select('usuario_asignado')
-        .not('usuario_asignado', 'is', null)
-      
-      const usuarios = Array.from(new Set(equipos?.map(e => e.usuario_asignado).filter(Boolean) as string[]))
-      setUsuariosExistentes(usuarios)
+      // Cargar empleados activos
+      const { data: empleadosData } = await supabase
+        .from('empleados')
+        .select('id, nombre_completo')
+        .eq('activo', true)
+        .order('nombre_completo')
+      setEmpleados(empleadosData || [])
 
       // Cargar racks existentes
       const { data: racks } = await supabase
@@ -85,6 +85,7 @@ export default function EditarEquipoPage() {
 
       setFormData({
         numero_equipo: equipo.numero_equipo.toString(),
+        empleado_id: equipo.empleado_id || '',
         usuario_asignado: equipo.usuario_asignado || '',
         estado: equipo.estado,
         ubicacion: equipo.ubicacion,
@@ -130,8 +131,8 @@ export default function EditarEquipoPage() {
         }
       })
       
-      // Verificar si usuario/rack son custom
-      if (formData.usuario_asignado && !usuariosExistentes.includes(formData.usuario_asignado)) {
+      // Verificar si usuario es custom (sin empleado_id pero con nombre)
+      if (!equipo.empleado_id && equipo.usuario_asignado) {
         setUsuarioCustom(true)
       }
       if (formData.rack && !RACKS_PREDEFINIDOS.includes(formData.rack) && !racksExistentes.includes(formData.rack)) {
@@ -175,6 +176,7 @@ export default function EditarEquipoPage() {
         .from('equipos')
         .update({
           numero_equipo: parseInt(formData.numero_equipo),
+          empleado_id: formData.empleado_id || null,
           usuario_asignado: formData.usuario_asignado || null,
           estado: formData.estado,
           ubicacion: formData.ubicacion,
@@ -265,40 +267,45 @@ export default function EditarEquipoPage() {
               </div>
 
               <div>
-                <label className="label">Usuario Asignado</label>
+                <label className="label">Empleado Asignado</label>
                 {!usuarioCustom ? (
                   <select
-                    value={formData.usuario_asignado}
+                    value={formData.empleado_id || ''}
                     onChange={(e) => {
                       if (e.target.value === '__custom__') {
                         setUsuarioCustom(true)
-                        setFormData({ ...formData, usuario_asignado: '' })
+                        setFormData({ ...formData, empleado_id: '', usuario_asignado: '' })
                       } else {
-                        setFormData({ ...formData, usuario_asignado: e.target.value })
+                        const emp = empleados.find(em => em.id === e.target.value)
+                        setFormData({
+                          ...formData,
+                          empleado_id: e.target.value,
+                          usuario_asignado: emp ? emp.nombre_completo : '',
+                        })
                       }
                     }}
                     className="input-field"
                   >
                     <option value="">Sin asignar</option>
-                    {usuariosExistentes.map((usuario) => (
-                      <option key={usuario} value={usuario}>{usuario}</option>
+                    {empleados.map((emp) => (
+                      <option key={emp.id} value={emp.id}>{emp.nombre_completo}</option>
                     ))}
-                    <option value="__custom__">➕ Agregar nuevo usuario</option>
+                    <option value="__custom__">➕ Otro (nombre manual)</option>
                   </select>
                 ) : (
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={formData.usuario_asignado}
-                      onChange={(e) => setFormData({ ...formData, usuario_asignado: e.target.value })}
+                      onChange={(e) => setFormData({ ...formData, usuario_asignado: e.target.value, empleado_id: '' })}
                       className="input-field flex-1"
-                      placeholder="Nombre del usuario"
+                      placeholder="Nombre (si no está en empleados)"
                     />
                     <button
                       type="button"
                       onClick={() => {
                         setUsuarioCustom(false)
-                        setFormData({ ...formData, usuario_asignado: '' })
+                        setFormData({ ...formData, usuario_asignado: '', empleado_id: '' })
                       }}
                       className="px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm"
                     >
@@ -306,6 +313,9 @@ export default function EditarEquipoPage() {
                     </button>
                   </div>
                 )}
+                <p className="text-xs text-gray-500 mt-1">
+                  Selecciona un empleado registrado o escribe el nombre manualmente
+                </p>
               </div>
 
               <div>

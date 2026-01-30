@@ -50,9 +50,21 @@ Thumbs.db
 terminals/
 .cursor/
 
+# SQL (esquemas y migraciones - no subir)
+*.sql
+
+# Archivos SQL (migraciones y esquemas - mantener en local)
+*.sql
+
+# Archivos SQL (migraciones y schemas)
+*.sql
+
 # Archivos privados con credenciales (NO SUBIR)
 *_PRIVADA.md
 *_PRIVATE.md
 CREDENCIALES.md
 .env.local.backup
 INSTRUCCIONES.md
+
+# Archivos SQL (migraciones y esquemas - mantener local)
+*.sql

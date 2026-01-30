@@ -17,7 +17,7 @@ export default function NuevoTicketPage() {
   const [formData, setFormData] = useState({
     usuario_solicitante: '',
     equipo_id: '',
-    tipo: 'Falla' as const,
+    tipo: 'Conectividad' as const,
     prioridad: 'Media' as const,
     titulo: '',
     descripcion: '',

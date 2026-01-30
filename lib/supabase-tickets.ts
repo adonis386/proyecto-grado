@@ -26,6 +26,9 @@ export type TicketCompleto = Ticket & {
 }
 
 export type TipoTicket = 
+  | 'Conectividad'
+  | 'Telefonía IP'
+  | 'Cableado Estructural'
   | 'Falla'
   | 'Cambio'
   | 'Mantenimiento'
@@ -46,6 +49,9 @@ export type PrioridadTicket =
   | 'Urgente'
 
 export const TIPOS_TICKET: TipoTicket[] = [
+  'Conectividad',
+  'Telefonía IP',
+  'Cableado Estructural',
   'Falla',
   'Cambio',
   'Mantenimiento',

@@ -7,52 +7,32 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import toast from 'react-hot-toast'
+import { RolProvider, useRolContext } from '@/lib/rol-context'
 
-export default function DashboardLayout({
+function DashboardContent({
   children,
+  user,
+  onLogout,
+  sidebarOpen,
+  setSidebarOpen,
 }: {
   children: React.ReactNode
+  user: any
+  onLogout: () => void
+  sidebarOpen: boolean
+  setSidebarOpen: (v: boolean) => void
 }) {
-  const router = useRouter()
   const pathname = usePathname()
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  async function checkUser() {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      router.push('/login')
-    } else {
-      setUser(session.user)
-    }
-    setLoading(false)
-  }
-
-  async function handleLogout() {
-    await supabase.auth.signOut()
-    toast.success('Sesión cerrada')
-    router.push('/login')
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-inn-primary text-xl">Cargando...</p>
-      </div>
-    )
-  }
-
-  if (!user) return null
+  const { canManageEmpleados } = useRolContext()
 
   const menuItems = [
     { href: '/dashboard', label: 'Inicio', icon: '🏠' },
+    ...(canManageEmpleados ? [{ href: '/dashboard/empleados', label: 'Empleados', icon: '👥' }] : []),
     { href: '/dashboard/equipos', label: 'Equipos', icon: '💻' },
     { href: '/dashboard/tickets', label: 'Tickets', icon: '🎫' },
+    { href: '/dashboard/reportes', label: 'Reportes', icon: '📊' },
+    { href: '/dashboard/guias', label: 'Guías', icon: '📖' },
+    { href: '/dashboard/cableado', label: 'Cableado', icon: '🔌' },
     { href: '/dashboard/inventario', label: 'Inventario', icon: '📦' },
     { href: '/dashboard/categorias', label: 'Categorías', icon: '📁' },
   ]
@@ -97,7 +77,7 @@ export default function DashboardLayout({
             <div className="flex items-center space-x-2 sm:space-x-4">
               <span className="text-xs sm:text-sm text-gray-600 truncate max-w-[120px] sm:max-w-none">{user.email}</span>
               <button
-                onClick={handleLogout}
+                onClick={onLogout}
                 className="btn-secondary text-xs sm:text-sm px-2 sm:px-4 py-2"
               >
                 <span className="hidden sm:inline">Cerrar Sesión</span>
@@ -155,5 +135,54 @@ export default function DashboardLayout({
       </div>
     </div>
   )
+}
+
+function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  useEffect(() => {
+    checkUser()
+  }, [])
+
+  async function checkUser() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      router.push('/login')
+    } else {
+      setUser(session.user)
+    }
+    setLoading(false)
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    toast.success('Sesión cerrada')
+    router.push('/login')
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-inn-primary text-xl">Cargando...</p>
+      </div>
+    )
+  }
+
+  if (!user) return null
+
+  return (
+    <RolProvider userId={user.id}>
+      <DashboardContent user={user} onLogout={handleLogout} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen}>
+        {children}
+      </DashboardContent>
+    </RolProvider>
+  )
+}
+
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+  return <DashboardLayoutInner>{children}</DashboardLayoutInner>
 }
 

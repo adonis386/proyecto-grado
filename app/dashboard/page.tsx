@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import { useRolContext } from '@/lib/rol-context'
 
 export default function Dashboard() {
+  const { canManageEmpleados } = useRolContext()
   const [stats, setStats] = useState({
     totalEquipos: 0,
     equiposOperativos: 0,
@@ -123,9 +125,17 @@ export default function Dashboard() {
         <div className="card">
           <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Acciones Rápidas</h2>
           <div className="space-y-3">
+            {canManageEmpleados && (
+              <Link
+                href="/dashboard/empleados/nuevo"
+                className="block btn-primary text-center text-sm sm:text-base"
+              >
+                👥 Registrar Empleado
+              </Link>
+            )}
             <Link
               href="/dashboard/equipos/nuevo"
-              className="block btn-primary text-center text-sm sm:text-base"
+              className="block btn-secondary text-center text-sm sm:text-base"
             >
               ➕ Agregar Nuevo Equipo
             </Link>
@@ -134,6 +144,18 @@ export default function Dashboard() {
               className="block btn-secondary text-center text-sm sm:text-base"
             >
               📋 Ver Todos los Equipos
+            </Link>
+            <Link
+              href="/dashboard/reportes"
+              className="block btn-secondary text-center text-sm sm:text-base"
+            >
+              📊 Ver Reportes
+            </Link>
+            <Link
+              href="/dashboard/guias"
+              className="block btn-secondary text-center text-sm sm:text-base"
+            >
+              📖 Base de Conocimiento
             </Link>
           </div>
         </div>

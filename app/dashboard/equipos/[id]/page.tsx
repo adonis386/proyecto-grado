@@ -9,6 +9,7 @@ import toast from 'react-hot-toast'
 type Equipo = {
   id: string
   numero_equipo: number
+  empleado_id: string | null
   usuario_asignado: string | null
   estado: string
   ubicacion: string
@@ -17,6 +18,7 @@ type Equipo = {
   observaciones: string | null
   created_at: string
   updated_at: string
+  empleados?: { nombre_completo: string } | null
 }
 
 type Componente = {
@@ -33,6 +35,7 @@ export default function EquipoDetailPage() {
   const router = useRouter()
   const [equipo, setEquipo] = useState<Equipo | null>(null)
   const [componentes, setComponentes] = useState<Componente[]>([])
+  const [conexionesRack, setConexionesRack] = useState<{ rack: string; puerto: string; tipo_conexion: string }[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -43,7 +46,7 @@ export default function EquipoDetailPage() {
     try {
       const { data: equipoData, error: equipoError } = await supabase
         .from('equipos')
-        .select('*')
+        .select('*, empleados(nombre_completo)')
         .eq('id', params.id)
         .single()
 
@@ -58,6 +61,12 @@ export default function EquipoDetailPage() {
 
       if (componentesError) throw componentesError
       setComponentes(componentesData || [])
+
+      const { data: conexiones } = await supabase
+        .from('conexiones_rack')
+        .select('rack, puerto, tipo_conexion')
+        .eq('equipo_id', params.id)
+      setConexionesRack(conexiones || [])
     } catch (error: any) {
       toast.error('Error al cargar equipo')
       router.push('/dashboard/equipos')
@@ -146,9 +155,19 @@ export default function EquipoDetailPage() {
                 <p className="font-bold text-2xl text-gray-900">#{equipo.numero_equipo}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500 mb-1">Usuario Asignado</p>
+                <p className="text-sm text-gray-500 mb-1">Empleado Asignado</p>
                 <p className="font-semibold text-gray-900">
-                  {equipo.usuario_asignado || <span className="text-gray-400">Sin asignar</span>}
+                  {equipo.empleados?.nombre_completo || equipo.usuario_asignado || (
+                    <span className="text-gray-400">Sin asignar</span>
+                  )}
+                  {equipo.empleado_id && (
+                    <Link
+                      href={`/dashboard/empleados/${equipo.empleado_id}`}
+                      className="ml-2 text-sm text-inn-primary hover:text-inn-dark font-medium"
+                    >
+                      Ver empleado →
+                    </Link>
+                  )}
                 </p>
               </div>
               <div>
@@ -180,6 +199,22 @@ export default function EquipoDetailPage() {
                   <span className="text-gray-400">Sin rack asignado</span>
                 )}
               </div>
+              {conexionesRack.length > 0 && (
+                <div className="col-span-2">
+                  <p className="text-sm text-gray-500 mb-1">Conexiones en racks</p>
+                  <div className="flex flex-wrap gap-2">
+                    {conexionesRack.map((c, i) => (
+                      <Link
+                        key={i}
+                        href="/dashboard/cableado"
+                        className="inline-flex px-3 py-1 text-sm rounded bg-blue-100 text-blue-800 hover:bg-blue-200"
+                      >
+                        {c.rack} · {c.puerto} ({c.tipo_conexion})
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
               {equipo.observaciones && (
                 <div className="col-span-2">
                   <p className="text-sm text-gray-500 mb-1">Observaciones</p>
