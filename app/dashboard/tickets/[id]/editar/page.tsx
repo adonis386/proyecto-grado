@@ -18,7 +18,7 @@ export default function EditarTicketPage() {
     usuario_solicitante: string
     equipo_id: string
     tipo: TipoTicket
-    estado: 'Abierto' | 'En Proceso' | 'Resuelto' | 'Cerrado' | 'Cancelado'
+    estado: 'Abierto' | 'Asignado' | 'En Proceso' | 'Pendiente' | 'Resuelto' | 'Cerrado' | 'Cancelado'
     prioridad: 'Baja' | 'Media' | 'Alta' | 'Urgente'
     titulo: string
     descripcion: string
@@ -84,8 +84,14 @@ export default function EditarTicketPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setLoading(true)
 
+    // BR-02: No cerrar ticket sin descripción de la solución
+    if ((formData.estado === 'Resuelto' || formData.estado === 'Cerrado') && !formData.solucion?.trim()) {
+      toast.error('BR-02: Debe ingresar la descripción de la solución para marcar el ticket como Resuelto o Cerrado.')
+      return
+    }
+
+    setLoading(true)
     try {
       const updateData: any = {
         usuario_solicitante: formData.usuario_solicitante,
@@ -100,10 +106,10 @@ export default function EditarTicketPage() {
         observaciones: formData.observaciones || null,
       }
 
-      // Si el estado cambia a Resuelto o Cerrado, actualizar fecha_resolucion
-      if ((formData.estado === 'Resuelto' || formData.estado === 'Cerrado') && formData.solucion) {
+      // Si el estado cambia a Resuelto o Cerrado, actualizar fecha_resolucion (BR-02: solucion ya validada)
+      if (formData.estado === 'Resuelto' || formData.estado === 'Cerrado') {
         updateData.fecha_resolucion = new Date().toISOString()
-      } else if (formData.estado === 'Abierto' || formData.estado === 'En Proceso') {
+      } else if (formData.estado === 'Abierto' || formData.estado === 'Asignado' || formData.estado === 'En Proceso' || formData.estado === 'Pendiente') {
         updateData.fecha_resolucion = null
       }
 
@@ -246,7 +252,12 @@ export default function EditarTicketPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="label">Solución</label>
+              <label className="label">
+                Solución
+                {(formData.estado === 'Resuelto' || formData.estado === 'Cerrado') && (
+                  <span className="text-amber-600 font-semibold ml-2">* Requerido (BR-02)</span>
+                )}
+              </label>
               <textarea
                 value={formData.solucion}
                 onChange={(e) => setFormData({ ...formData, solucion: e.target.value })}

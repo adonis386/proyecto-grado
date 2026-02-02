@@ -215,7 +215,7 @@ export default function NuevoEquipoPage() {
                   </div>
                 )}
                 <p className="text-xs text-gray-500 mt-1">
-                  Selecciona un empleado registrado o escribe el nombre manualmente
+                  BR-01: Vincule a empleado, rack y registre conexión en Cableado para trazabilidad completa.
                 </p>
               </div>
 

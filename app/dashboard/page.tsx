@@ -166,12 +166,14 @@ export default function Dashboard() {
             >
               📋 Ver Todos los Equipos
             </Link>
-            <Link
-              href="/dashboard/reportes"
-              className="block btn-secondary text-center text-sm sm:text-base"
-            >
-              📊 Ver Reportes
-            </Link>
+            {canManageEmpleados && (
+              <Link
+                href="/dashboard/reportes"
+                className="block btn-secondary text-center text-sm sm:text-base"
+              >
+                📊 Ver Reportes
+              </Link>
+            )}
             <Link
               href="/dashboard/guias"
               className="block btn-secondary text-center text-sm sm:text-base"

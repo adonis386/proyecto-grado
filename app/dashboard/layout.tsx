@@ -30,7 +30,7 @@ function DashboardContent({
     ...(canManageEmpleados ? [{ href: '/dashboard/empleados', label: 'Empleados', icon: '👥' }] : []),
     { href: '/dashboard/equipos', label: 'Equipos', icon: '💻' },
     { href: '/dashboard/tickets', label: 'Tickets', icon: '🎫' },
-    { href: '/dashboard/reportes', label: 'Reportes', icon: '📊' },
+    ...(canManageEmpleados ? [{ href: '/dashboard/reportes', label: 'Reportes', icon: '📊' }] : []), // BR-03: solo Gerencia/Admin
     { href: '/dashboard/guias', label: 'Guías', icon: '📖' },
     { href: '/dashboard/cableado', label: 'Cableado', icon: '🔌' },
     { href: '/dashboard/inventario', label: 'Inventario', icon: '📦' },

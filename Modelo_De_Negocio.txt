@@ -1,0 +1,93 @@
+        Modelo De Negocio "INN-INVENTARIO"
+Proyecto: Despliegue de Infraestructura y Sistema de Gestión de Activos - INN. Enfoque: Optimización Operativa y Soberanía Tecnológica.
+      El modelado de negocio describe los procesos operativos del Instituto Nacional de Nutrición (INN) impactados por la nueva infraestructura de red y el sistema de gestión. Su objetivo es alinear el desarrollo de software con la realidad técnica detectada en el departamento de TI, transformando el soporte técnico en una unidad de eficiencia operativa.
+1. Definición de Actores de Negocio
+* Usuario Final (Empleado INN): Personal de cualquier departamento que posee activos asignados y reporta incidencias de hardware o conectividad.
+* Analista de Redes y Soporte (Técnico): Personal responsable de tareas de campo (mantenimiento, cableado) y de actualizar el inventario físico y lógico en el sistema.
+* Gerente de Tecnología (Auditor): Perfil con privilegios para supervisar tiempos de respuesta (SLA), gestionar compras y auditar la fiabilidad de los equipos (MTBF).
+* Administrador del Sistema: Responsable de la gestión de roles, seguridad de la base de datos y mantenimiento de la base de conocimientos técnicos.
+2. Catálogo de Procesos Críticos
+* Gestión de Incidencias (Help Desk): Centraliza solicitudes de soporte. Su lógica se basa en la entrada de una falla clasificada por prioridad y la salida de un ticket resuelto con feedback del usuario, alimentando el historial de mantenimiento del equipo.
+* Control Patrimonial y Técnico (Inventario 360°): Garantiza la trazabilidad total. Vincula cada equipo (serial, marca, modelo) a su ubicación física (oficina/rack) y a su estado de salud técnica, permitiendo conocer en tiempo real la disponibilidad de activos.
+3. Reglas de Negocio (Business Rules) para Auditoría
+      Estas reglas rigen el comportamiento del sistema y garantizan la integridad de la información:
+      BR-01: Todo activo de red debe estar vinculado obligatoriamente a un usuario, una IP y un puerto en el Rack para permitir diagnósticos remotos y trazabilidad física.
+      BR-02: El sistema no permitirá el cierre de un ticket de soporte si el técnico no adjunta una descripción de la solución y actualiza el estado de mantenimiento preventivo del equipo afectado.
+      BR-03: Los indicadores de gestión, como el Tiempo Medio Entre Fallas (MTBF) y reportes de inventario crítico, son de acceso exclusivo para roles de Gerencia y Supervisión.
+      BR-04: El sistema debe alertar automáticamente sobre mantenimientos preventivos pendientes basándose en los estándares de gestión térmica (ASHRAE) y el tiempo transcurrido desde la última intervención.
+4. Propuesta de Valor e Impacto Técnico
+      La implementación de este modelo bajo estándares de Ingeniería de Software asegura:
+* Continuidad Operativa: Reducción de caídas de sistema mediante la prevención programada.
+* Soberanía Tecnológica: Desarrollo basado en software libre (Next.js, PostgreSQL), eliminando costos de licenciamiento y asegurando el control total del código fuente por parte del Estado.
+* Transparencia: Un registro inmutable de cada acción técnica, facilitando auditorías internas y la toma de decisiones basada en datos reales sobre la obsolescencia del hardware.
+        Diagrama De Casos De Uso (Sistema Inn-Inventario)
+        Este diagrama representa la interacción entre los actores del Instituto Nacional de Nutrición y las funcionalidades clave del software, diseñado bajo estándares de Ingeniería de Software.
+        Representación Visual (Modelo De Interacción)
+SISTEMA DE GESTIÓN INTEGRAL (INN-INVENTARIO)
+
+_______________________________________________
+|                                               |
+|   ( CUN-01: Registro de Solicitud de Red )    |
+(o) |                     ^                         |
+/|\ |                     |                         |
+/ \ |          -----------|                         |
+USUARIO|         |                                   |
+FINAL |         |   ( CUN-02: Gestión de Inventario) | (o)
+|         |                     ^             | /|\
+|         |                     |             | / \
+|         |          -----------|             | TÉCNICO
+|         |         |                         | SOPORTE
+|         |         |                         |
+|         |   ( CUN-03: Seguimiento/Auditoría)|
+|         |                     ^             |
+|         |                     |             | (o)
+|         |          -----------|             | /|\
+|         |         |                         | / \
+|         |         |                         | GERENTE
+|   ( CUN-04: Consulta de Info. Técnica)  |  T.I.
+|_______________________________________________|
+
+Diccionario De Casos De Uso                    CódigoCaso de UsoDescripción Técnica        CUN-01Registro de SolicitudEl Usuario Final reporta fallas (conectividad, hardware) asignando prioridad.        CUN-02Gestión de InventarioEl Técnico vincula hardware a usuarios y puertos específicos del Rack.        CUN-03Auditoría de GestiónEl Gerente visualiza métricas de resolución y tiempos de respuesta (SLA).        CUN-04Consulta TécnicaEl Técnico accede a la base de conocimientos para diagnósticos remotos.        Diagrama Entidad-Relación (Modelo De Datos)
+
+	Este diagrama representa la arquitectura de la base de datos del sistema INN-INVENTARIO, diseñada para garantizar la trazabilidad total de los activos y la eficiencia en la gestión de soporte técnico.
+
+
+    [ UBICACIONES ]          [ USUARIOS ]          [ CATEGORÍAS ]
+    (Oficinas/Racks)        (Responsables)        (Hardware/Red)
+           |                      |                      |
+           |                      |                      |
+           +----------+-----------+----------+-----------+
+                      |                      |
+                [  ACTIVOS  ] <--------------+
+                (Equipos/PC)
+                      |
+                      | (1:N)
+                      |
+                [   TICKETS   ] <------------ [  TÉCNICOS  ]
+                (Incidencias)             (Soporte Nivel 1)
+        
+        Diccionario De Datos (Atributos Clave)
+      Para que el modelo sea auditable, cada entidad posee campos específicos que aseguran la Integridad ACiD:
+EntidadAtributos PrincipalesLógica de Negocio        ACTIVOSID, Serial, Marca, Modelo, IP, Estado.Relaciona el hardware con su ubicación física y lógica.        TICKETSID, Descripción, Prioridad, Fecha_Apertura, Status.Registra el ciclo de vida de la falla (Abierto/Cerrado).        UBICACIONESID, Departamento, Ala, Nivel, Rack_ID.Permite la geolocalización técnica del equipo en el INN.        AUDITORÍAID_Transacción, Fecha, Usuario_ID, Acción.(Invisible al usuario) Garantiza la inmutabilidad de los registros.                
+
+        Diagrama De Estados: Ciclo De Vida Del Ticket
+        Este diagrama describe las transiciones lógicas por las que atraviesa una solicitud de soporte dentro del sistema INN-INVENTARIO, garantizando que se cumplan las reglas de negocio y la trazabilidad técnica.
+[*] --> ABIERTO : Usuario reporta falla
+ABIERTO --> ASIGNADO : Supervisor asigna técnico
+ASIGNADO --> EN_PROCESO : Técnico inicia labores
+EN_PROCESO --> PENDIENTE : Falta repuesto/insumo
+PENDIENTE --> EN_PROCESO : Insumo recibido
+EN_PROCESO --> RESUELTO : Técnico registra solución
+RESUELTO --> CERRADO : Usuario/Admin confirma
+CERRADO --> [*]
+        
+        El diagrama sigue un flujo lineal con una bifurcación para casos donde la reparación depende de factores externos como repuestos.
+EstadoDescripción TécnicaEvento de Disparo (Trigger)        ABIERTOEl ticket es creado en la BD.Registro inicial en el módulo de Help Desk.        ASIGNADOSe vincula un id_tecnico al ticket.Acción manual del supervisor en el panel de control.        EN PROCESOEl técnico está interviniendo el activo.El técnico cambia el estatus para indicar actividad.        PENDIENTEPausa operativa por falta de recursos.Registro de observación técnica (ej. falta conector RJ45).        RESUELTOLa falla ha sido corregida físicamente.Carga obligatoria de la descripción técnica (BR-02).        CERRADOEl ticket se archiva para el histórico.Validación final de calidad y satisfacción.        
+        
+      Al presentar este diagrama, resaltamos  puntos que validan la calidad del software:
+      Validación de Reglas de Negocio (BR-02): El paso de EN PROCESO a RESUELTO está condicionado por código. El sistema valida que el campo "Descripción de la Solución" no esté vacío, impidiendo cierres de tickets sin sustento técnico.
+      Cálculo de SLA (Service Level Agreement): Al tener estados definidos, el software puede calcular cuánto tiempo pasó el ticket en cada fase. Esto permite identificar cuellos de botella (por ejemplo, si los tickets pasan demasiado tiempo en estado "Asignado" pero no inician).
+      Integridad del Histórico: Una vez que el ticket llega al estado CERRADO, el registro se vuelve de "Solo Lectura" para evitar alteraciones posteriores en las métricas de gestión, cumpliendo con principios de seguridad de la información.
+      Gestión de Continuidad Operativa: La transición entre estados permite al sistema identificar activos con fallas recurrentes. Si un equipo entra en estado "ABIERTO" con demasiada frecuencia en un periodo corto, el sistema notifica una alerta de degradación de hardware, vinculando la lógica de estados directamente con el indicador MTBF.
+      
+

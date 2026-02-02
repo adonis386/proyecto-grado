@@ -37,7 +37,9 @@ export type TipoTicket =
 
 export type EstadoTicket = 
   | 'Abierto'
+  | 'Asignado'
   | 'En Proceso'
+  | 'Pendiente'
   | 'Resuelto'
   | 'Cerrado'
   | 'Cancelado'
@@ -61,7 +63,9 @@ export const TIPOS_TICKET: TipoTicket[] = [
 
 export const ESTADOS_TICKET: EstadoTicket[] = [
   'Abierto',
+  'Asignado',
   'En Proceso',
+  'Pendiente',
   'Resuelto',
   'Cerrado',
   'Cancelado',

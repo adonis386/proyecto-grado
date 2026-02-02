@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import Link from 'next/link'
+import { useRolContext } from '@/lib/rol-context'
 
 type ReporteIncidencias = {
   total: number
@@ -33,7 +35,13 @@ type TicketReciente = {
 }
 
 export default function ReportesPage() {
+  const router = useRouter()
+  const { canManageEmpleados } = useRolContext()
   const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!canManageEmpleados) router.replace('/dashboard')
+  }, [canManageEmpleados, router])
   const [incidencias, setIncidencias] = useState<ReporteIncidencias>({
     total: 0,
     abiertos: 0,
@@ -82,7 +90,7 @@ export default function ReportesPage() {
         porPrioridad[t.prioridad] = (porPrioridad[t.prioridad] || 0) + 1
 
         if (t.estado === 'Abierto') abiertos++
-        else if (t.estado === 'En Proceso') enProceso++
+        else if (['Asignado', 'En Proceso', 'Pendiente'].includes(t.estado)) enProceso++
         else if (t.estado === 'Resuelto' || t.estado === 'Cerrado') {
           resueltos++
           if (t.fecha_resolucion && t.created_at) {
