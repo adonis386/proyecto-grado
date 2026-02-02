@@ -11,6 +11,7 @@ export default function EditarTicketPage() {
   const params = useParams()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [loadingIA, setLoadingIA] = useState(false)
   const [loadingData, setLoadingData] = useState(true)
   const [equipos, setEquipos] = useState<any[]>([])
   
@@ -126,6 +127,33 @@ export default function EditarTicketPage() {
       toast.error(error.message || 'Error al actualizar ticket')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleSugerirSolucionIA() {
+    if (!formData.titulo?.trim() || !formData.descripcion?.trim()) {
+      toast.error('Complete título y descripción del ticket para usar la IA')
+      return
+    }
+    setLoadingIA(true)
+    try {
+      const res = await fetch('/api/ai/suggest-solution', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titulo: formData.titulo,
+          descripcion: formData.descripcion,
+          tipo: formData.tipo,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error')
+      setFormData((prev) => ({ ...prev, solucion: data.solucion }))
+      toast.success('Sugerencia generada')
+    } catch (err: any) {
+      toast.error(err.message || 'Error al generar sugerencia')
+    } finally {
+      setLoadingIA(false)
     }
   }
 
@@ -252,12 +280,22 @@ export default function EditarTicketPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="label">
-                Solución
-                {(formData.estado === 'Resuelto' || formData.estado === 'Cerrado') && (
-                  <span className="text-amber-600 font-semibold ml-2">* Requerido (BR-02)</span>
-                )}
-              </label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="label mb-0">
+                  Solución
+                  {(formData.estado === 'Resuelto' || formData.estado === 'Cerrado') && (
+                    <span className="text-amber-600 font-semibold ml-2">* Requerido (BR-02)</span>
+                  )}
+                </label>
+                <button
+                  type="button"
+                  onClick={handleSugerirSolucionIA}
+                  disabled={loadingIA || !formData.titulo?.trim() || !formData.descripcion?.trim()}
+                  className="text-sm px-3 py-1.5 rounded-lg bg-purple-100 text-purple-800 hover:bg-purple-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                >
+                  {loadingIA ? '...' : '✨'} Sugerir con IA
+                </button>
+              </div>
               <textarea
                 value={formData.solucion}
                 onChange={(e) => setFormData({ ...formData, solucion: e.target.value })}
