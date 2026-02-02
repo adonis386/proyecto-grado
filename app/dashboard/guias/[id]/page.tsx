@@ -21,6 +21,9 @@ export default function GuiaDetallePage() {
   const params = useParams()
   const [guia, setGuia] = useState<Guia | null>(null)
   const [loading, setLoading] = useState(true)
+  const [pregunta, setPregunta] = useState('')
+  const [respuestaIA, setRespuestaIA] = useState('')
+  const [loadingIA, setLoadingIA] = useState(false)
 
   useEffect(() => {
     loadGuia()
@@ -41,6 +44,31 @@ export default function GuiaDetallePage() {
       console.error(error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handlePreguntarIA() {
+    if (!pregunta?.trim() || !guia) return
+    setLoadingIA(true)
+    setRespuestaIA('')
+    try {
+      const res = await fetch('/api/ai/ask-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titulo: guia.titulo,
+          contenido: guia.contenido,
+          categoria: guia.categoria,
+          pregunta: pregunta.trim(),
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error')
+      setRespuestaIA(data.respuesta)
+    } catch (err: any) {
+      toast.error(err.message || 'Error al consultar')
+    } finally {
+      setLoadingIA(false)
     }
   }
 
@@ -95,6 +123,37 @@ export default function GuiaDetallePage() {
             year: 'numeric',
           })}
         </div>
+      </div>
+
+      <div className="card mt-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2">¿Tienes dudas sobre esta guía?</h2>
+        <p className="text-sm text-gray-600 mb-3">
+          Escribe tu pregunta y la IA te responderá basándose en el contenido de esta guía.
+        </p>
+        <div className="space-y-2">
+          <textarea
+            value={pregunta}
+            onChange={(e) => setPregunta(e.target.value)}
+            placeholder="Ej: ¿En qué paso debo verificar el rack? ¿Qué hago si el equipo no responde?"
+            className="input-field w-full"
+            rows={3}
+            disabled={loadingIA}
+          />
+          <button
+            type="button"
+            onClick={handlePreguntarIA}
+            disabled={loadingIA || !pregunta?.trim()}
+            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loadingIA ? 'Consultando...' : '✨ Preguntar a la IA'}
+          </button>
+        </div>
+        {respuestaIA && (
+          <div className="mt-4 p-4 rounded-lg bg-purple-50 border border-purple-100">
+            <p className="text-sm font-medium text-purple-800 mb-2">Respuesta de la IA:</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{respuestaIA}</p>
+          </div>
+        )}
       </div>
     </div>
   )

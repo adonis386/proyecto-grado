@@ -29,7 +29,8 @@ GEMINI_MODEL=gemini-2.5-flash-preview
 ## 3. Dónde se usa
 
 - **Editar Ticket** → Botón "Sugerir con IA" junto al campo Solución
-- **Guías (Nueva / Editar)** → Botón "Generar con IA" junto al campo Contenido (genera borrador a partir del título y categoría)
+- **Guías (Nueva / Editar)** → Botón "Generar con IA" junto al campo Contenido
+- **Guía (detalle)** → Campo de texto "¿Tienes dudas?" para preguntar a la IA sobre esa guía concreta
 
 ## 4. Producción
 
