@@ -11,6 +11,7 @@ export default function EditarGuiaPage() {
   const params = useParams()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [loadingIA, setLoadingIA] = useState(false)
   const [loadingData, setLoadingData] = useState(true)
   const [formData, setFormData] = useState({
     titulo: '',
@@ -74,6 +75,36 @@ export default function EditarGuiaPage() {
     }
   }
 
+  async function handleGenerarConIA() {
+    if (!formData.titulo?.trim()) {
+      toast.error('Ingresa un título para generar la guía')
+      return
+    }
+    setLoadingIA(true)
+    try {
+      const res = await fetch('/api/ai/suggest-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          titulo: formData.titulo,
+          categoria: formData.categoria,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error')
+      setFormData((prev) => ({
+        ...prev,
+        contenido: data.contenido || prev.contenido,
+        palabras_clave: data.palabras_clave || prev.palabras_clave,
+      }))
+      toast.success('Borrador generado')
+    } catch (err: any) {
+      toast.error(err.message || 'Error al generar guía')
+    } finally {
+      setLoadingIA(false)
+    }
+  }
+
   if (loadingData) return <div className="text-center py-12">Cargando...</div>
 
   return (
@@ -119,7 +150,17 @@ export default function EditarGuiaPage() {
             </div>
 
             <div>
-              <label className="label">Contenido *</label>
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <label className="label mb-0">Contenido *</label>
+                <button
+                  type="button"
+                  onClick={handleGenerarConIA}
+                  disabled={loadingIA || !formData.titulo?.trim()}
+                  className="text-sm px-3 py-1.5 rounded-lg bg-purple-100 text-purple-800 hover:bg-purple-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                >
+                  {loadingIA ? '...' : '✨'} Generar con IA
+                </button>
+              </div>
               <textarea
                 value={formData.contenido}
                 onChange={(e) => setFormData({ ...formData, contenido: e.target.value })}
