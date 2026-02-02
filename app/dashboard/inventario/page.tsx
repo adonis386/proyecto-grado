@@ -4,11 +4,16 @@ import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import toast from 'react-hot-toast'
 
+function buildKey(tipo: string, marca: string | null, modelo: string | null) {
+  return `${tipo}|${marca ?? ''}|${modelo ?? ''}`
+}
+
 type ComponenteStock = {
   tipo: string
   marca: string | null
   modelo: string | null
-  cantidad: number
+  enUso: number
+  enAlmacen: number
   equipos: {
     numero_equipo: number
     usuario_asignado: string | null
@@ -21,8 +26,10 @@ export default function InventarioPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterTipo, setFilterTipo] = useState('Todos')
   const [filterMarca, setFilterMarca] = useState('Todos')
-  const [sortBy, setSortBy] = useState<'cantidad' | 'tipo' | 'marca' | 'modelo'>('cantidad')
+  const [sortBy, setSortBy] = useState<'enUso' | 'enAlmacen' | 'tipo' | 'marca' | 'modelo'>('enUso')
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [editAlmacenKey, setEditAlmacenKey] = useState<string | null>(null)
+  const [editAlmacenVal, setEditAlmacenVal] = useState<number>(0)
 
   useEffect(() => {
     loadInventario()
@@ -30,7 +37,7 @@ export default function InventarioPage() {
 
   async function loadInventario() {
     try {
-      // Cargar todos los componentes con información de sus equipos
+      // Cargar componentes (en uso) con información de equipos
       const { data: componentesData, error: componentesError } = await supabase
         .from('componentes')
         .select(`
@@ -47,28 +54,60 @@ export default function InventarioPage() {
 
       if (componentesError) throw componentesError
 
-      // Agrupar por tipo, marca y modelo
+      // Cargar stock en almacén (cantidad disponible en bodega)
+      let stockData: { tipo: string; marca: string; modelo: string; cantidad: number }[] = []
+      const { data: stockRows, error: stockError } = await supabase
+        .from('stock_almacen')
+        .select('tipo, marca, modelo, cantidad')
+      if (stockError) {
+        // Tabla no existe o error de permisos: seguir sin stock en almacén
+        console.warn('[Inventario] stock_almacen:', stockError.message)
+        stockData = []
+      } else {
+        stockData = stockRows || []
+      }
+
+      const stockMap = new Map<string, number>()
+      stockData.forEach((s) => {
+        stockMap.set(buildKey(s.tipo, s.marca ?? '', s.modelo ?? ''), s.cantidad ?? 0)
+      })
+
+      // Agrupar por tipo, marca y modelo: en uso (asignados a equipos) + en almacén
       const agrupados = new Map<string, ComponenteStock>()
 
       componentesData?.forEach((comp: any) => {
-        const key = `${comp.tipo}|${comp.marca || 'Sin Marca'}|${comp.modelo || 'Sin Modelo'}`
-        
+        const key = buildKey(comp.tipo, comp.marca, comp.modelo)
         if (!agrupados.has(key)) {
           agrupados.set(key, {
             tipo: comp.tipo,
             marca: comp.marca,
             modelo: comp.modelo,
-            cantidad: 0,
+            enUso: 0,
+            enAlmacen: stockMap.get(key) ?? 0,
             equipos: [],
           })
         }
-
         const item = agrupados.get(key)!
-        item.cantidad++
+        item.enUso++
         if (comp.equipos) {
           item.equipos.push({
             numero_equipo: comp.equipos.numero_equipo,
             usuario_asignado: comp.equipos.usuario_asignado,
+          })
+        }
+      })
+
+      // Incluir filas que solo tienen stock en almacén (sin uso aún)
+      stockData.forEach((s) => {
+        const key = buildKey(s.tipo, s.marca ?? '', s.modelo ?? '')
+        if (!agrupados.has(key)) {
+          agrupados.set(key, {
+            tipo: s.tipo,
+            marca: s.marca || null,
+            modelo: s.modelo || null,
+            enUso: 0,
+            enAlmacen: s.cantidad ?? 0,
+            equipos: [],
           })
         }
       })
@@ -80,6 +119,27 @@ export default function InventarioPage() {
       console.error(error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function actualizarStockAlmacen(comp: ComponenteStock, nuevaCantidad: number) {
+    const marca = comp.marca ?? ''
+    const modelo = comp.modelo ?? ''
+    try {
+      const { error } = await supabase.from('stock_almacen').upsert(
+        {
+          tipo: comp.tipo,
+          marca,
+          modelo,
+          cantidad: Math.max(0, nuevaCantidad),
+        },
+        { onConflict: 'tipo,marca,modelo' }
+      )
+      if (error) throw error
+      toast.success('Stock en almacén actualizado')
+      loadInventario()
+    } catch (e: any) {
+      toast.error(e.message || 'Error al actualizar stock')
     }
   }
 
@@ -98,11 +158,14 @@ export default function InventarioPage() {
   // Ordenar
   const sortedComponentes = [...filteredComponentes].sort((a, b) => {
     let aVal: any, bVal: any
-    
     switch (sortBy) {
-      case 'cantidad':
-        aVal = a.cantidad
-        bVal = b.cantidad
+      case 'enUso':
+        aVal = a.enUso
+        bVal = b.enUso
+        break
+      case 'enAlmacen':
+        aVal = a.enAlmacen
+        bVal = b.enAlmacen
         break
       case 'tipo':
         aVal = a.tipo
@@ -116,13 +179,12 @@ export default function InventarioPage() {
         aVal = a.modelo || ''
         bVal = b.modelo || ''
         break
+      default:
+        aVal = a.enUso
+        bVal = b.enUso
     }
-
-    if (sortOrder === 'asc') {
-      return aVal > bVal ? 1 : -1
-    } else {
-      return aVal < bVal ? 1 : -1
-    }
+    if (sortOrder === 'asc') return aVal > bVal ? 1 : -1
+    return aVal < bVal ? 1 : -1
   })
 
   if (loading) {
@@ -133,7 +195,8 @@ export default function InventarioPage() {
   const tipos: string[] = ['Todos', ...Array.from(new Set(componentes.map(c => c.tipo)))]
   const marcas: string[] = ['Todos', ...Array.from(new Set(componentes.map(c => c.marca).filter((m): m is string => Boolean(m))))]
 
-  const totalComponentes = componentes.reduce((sum, c) => sum + c.cantidad, 0)
+  const totalEnUso = componentes.reduce((sum, c) => sum + c.enUso, 0)
+  const totalEnAlmacen = componentes.reduce((sum, c) => sum + c.enAlmacen, 0)
   const tiposUnicos = new Set(componentes.map(c => c.tipo)).size
 
   return (
@@ -141,22 +204,26 @@ export default function InventarioPage() {
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Inventario de Componentes</h1>
         <p className="text-sm sm:text-base text-gray-600">
-          Control de existencia de componentes por tipo, marca y modelo
+          <strong>En uso:</strong> asignados a equipos. <strong>En almacén:</strong> cantidad disponible en bodega para asignar.
         </p>
       </div>
 
       {/* Estadísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="card">
-          <p className="text-sm text-gray-600 mb-1">Total Componentes</p>
-          <p className="text-3xl font-bold text-gray-900">{totalComponentes}</p>
+          <p className="text-sm text-gray-600 mb-1">En uso (equipos)</p>
+          <p className="text-3xl font-bold text-gray-900">{totalEnUso}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600 mb-1">Tipos Diferentes</p>
+          <p className="text-sm text-gray-600 mb-1">En almacén</p>
+          <p className="text-3xl font-bold text-inn-primary">{totalEnAlmacen}</p>
+        </div>
+        <div className="card">
+          <p className="text-sm text-gray-600 mb-1">Tipos</p>
           <p className="text-3xl font-bold text-gray-900">{tiposUnicos}</p>
         </div>
         <div className="card">
-          <p className="text-sm text-gray-600 mb-1">Modelos Únicos</p>
+          <p className="text-sm text-gray-600 mb-1">Modelos únicos</p>
           <p className="text-3xl font-bold text-gray-900">{componentes.length}</p>
         </div>
       </div>
@@ -210,7 +277,8 @@ export default function InventarioPage() {
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className="input-field flex-1"
               >
-                <option value="cantidad">Cantidad</option>
+                <option value="enUso">En uso</option>
+                <option value="enAlmacen">En almacén</option>
                 <option value="tipo">Tipo</option>
                 <option value="marca">Marca</option>
                 <option value="modelo">Modelo</option>
@@ -249,45 +317,101 @@ export default function InventarioPage() {
                 <th className="px-6 py-3 text-left text-sm font-semibold">Tipo</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Marca</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Modelo</th>
-                <th className="px-6 py-3 text-center text-sm font-semibold">Cantidad</th>
+                <th className="px-6 py-3 text-center text-sm font-semibold">En uso</th>
+                <th className="px-6 py-3 text-center text-sm font-semibold">En almacén</th>
                 <th className="px-6 py-3 text-left text-sm font-semibold">Equipos</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {sortedComponentes.map((comp, idx) => (
-                <tr key={idx} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">
-                    <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
-                      {comp.tipo}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {comp.marca || <span className="text-gray-400">Sin marca</span>}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
-                    {comp.modelo || <span className="text-gray-400">Sin modelo</span>}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-inn-primary text-white font-bold text-lg">
-                      {comp.cantidad}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-2 max-w-md">
-                      {comp.equipos.slice(0, 3).map((eq, i) => (
-                        <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700">
-                          #{eq.numero_equipo} {eq.usuario_asignado ? `- ${eq.usuario_asignado}` : ''}
-                        </span>
-                      ))}
-                      {comp.equipos.length > 3 && (
-                        <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-200 text-gray-600">
-                          +{comp.equipos.length - 3} más
-                        </span>
+              {sortedComponentes.map((comp, idx) => {
+                const key = buildKey(comp.tipo, comp.marca, comp.modelo)
+                const isEditing = editAlmacenKey === key
+                return (
+                  <tr key={idx} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
+                        {comp.tipo}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {comp.marca || <span className="text-gray-400">Sin marca</span>}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-900">
+                      {comp.modelo || <span className="text-gray-400">Sin modelo</span>}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800 font-bold text-lg">
+                        {comp.enUso}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {isEditing ? (
+                        <div className="flex items-center justify-center gap-1">
+                          <input
+                            type="number"
+                            min={0}
+                            value={editAlmacenVal}
+                            onChange={(e) => setEditAlmacenVal(parseInt(e.target.value, 10) || 0)}
+                            className="input-field w-20 text-center"
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              actualizarStockAlmacen(comp, editAlmacenVal)
+                              setEditAlmacenKey(null)
+                            }}
+                            className="px-2 py-1 bg-inn-primary text-white rounded text-xs"
+                          >
+                            OK
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditAlmacenKey(null)}
+                            className="px-2 py-1 bg-gray-300 rounded text-xs"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center gap-1">
+                          <span className="inline-flex items-center justify-center min-w-[2.5rem] h-10 rounded-full bg-inn-primary text-white font-bold text-lg">
+                            {comp.enAlmacen}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditAlmacenKey(key)
+                              setEditAlmacenVal(comp.enAlmacen)
+                            }}
+                            className="text-xs text-inn-primary hover:underline"
+                            title="Editar cantidad en almacén"
+                          >
+                            Editar
+                          </button>
+                        </div>
                       )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-wrap gap-2 max-w-md">
+                        {comp.equipos.slice(0, 3).map((eq, i) => (
+                          <span key={i} className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-100 text-gray-700">
+                            #{eq.numero_equipo} {eq.usuario_asignado ? `- ${eq.usuario_asignado}` : ''}
+                          </span>
+                        ))}
+                        {comp.equipos.length > 3 && (
+                          <span className="inline-flex items-center px-2 py-1 rounded text-xs bg-gray-200 text-gray-600">
+                            +{comp.equipos.length - 3} más
+                          </span>
+                        )}
+                        {comp.equipos.length === 0 && (
+                          <span className="text-gray-400 text-xs">—</span>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
@@ -295,37 +419,91 @@ export default function InventarioPage() {
 
       {/* Vista Mobile: Cards */}
       <div className="lg:hidden space-y-4">
-        {sortedComponentes.map((comp, idx) => (
-          <div key={idx} className="card">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 mb-2">
-                  {comp.tipo}
-                </span>
-                <h3 className="text-lg font-bold text-gray-900">
-                  {comp.marca || 'Sin marca'} {comp.modelo || 'Sin modelo'}
-                </h3>
-              </div>
-              <span className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-inn-primary text-white font-bold text-xl">
-                {comp.cantidad}
-              </span>
-            </div>
-
-            <div className="mb-3">
-              <p className="text-xs font-medium text-gray-500 mb-1">Equipos ({comp.equipos.length}):</p>
-              <div className="flex flex-wrap gap-2">
-                {comp.equipos.slice(0, 5).map((eq, i) => (
-                  <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
-                    #{eq.numero_equipo}
+        {sortedComponentes.map((comp, idx) => {
+          const key = buildKey(comp.tipo, comp.marca, comp.modelo)
+          const isEditing = editAlmacenKey === key
+          return (
+            <div key={idx} className="card">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <span className="inline-flex px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 mb-2">
+                    {comp.tipo}
                   </span>
-                ))}
-                {comp.equipos.length > 5 && (
-                  <span className="text-xs text-gray-500">+{comp.equipos.length - 5} más</span>
-                )}
+                  <h3 className="text-lg font-bold text-gray-900">
+                    {comp.marca || 'Sin marca'} {comp.modelo || 'Sin modelo'}
+                  </h3>
+                </div>
+                <div className="flex gap-2">
+                  <span className="inline-flex flex-col items-center">
+                    <span className="text-xs text-gray-500">En uso</span>
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-gray-200 text-gray-800 font-bold">
+                      {comp.enUso}
+                    </span>
+                  </span>
+                  <span className="inline-flex flex-col items-center">
+                    <span className="text-xs text-gray-500">Almacén</span>
+                    {isEditing ? (
+                      <div className="flex flex-col gap-1">
+                        <input
+                          type="number"
+                          min={0}
+                          value={editAlmacenVal}
+                          onChange={(e) => setEditAlmacenVal(parseInt(e.target.value, 10) || 0)}
+                          className="input-field w-14 text-center text-sm"
+                        />
+                        <div className="flex gap-1">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              actualizarStockAlmacen(comp, editAlmacenVal)
+                              setEditAlmacenKey(null)
+                            }}
+                            className="px-2 py-0.5 bg-inn-primary text-white rounded text-xs"
+                          >
+                            OK
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setEditAlmacenKey(null)}
+                            className="px-2 py-0.5 bg-gray-300 rounded text-xs"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditAlmacenKey(key)
+                          setEditAlmacenVal(comp.enAlmacen)
+                        }}
+                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-inn-primary text-white font-bold"
+                      >
+                        {comp.enAlmacen}
+                      </button>
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <p className="text-xs font-medium text-gray-500 mb-1">Equipos ({comp.enUso}):</p>
+                <div className="flex flex-wrap gap-2">
+                  {comp.equipos.slice(0, 5).map((eq, i) => (
+                    <span key={i} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                      #{eq.numero_equipo}
+                    </span>
+                  ))}
+                  {comp.equipos.length > 5 && (
+                    <span className="text-xs text-gray-500">+{comp.equipos.length - 5} más</span>
+                  )}
+                  {comp.equipos.length === 0 && <span className="text-gray-400 text-xs">—</span>}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {sortedComponentes.length === 0 && (

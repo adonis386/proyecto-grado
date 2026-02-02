@@ -19,10 +19,12 @@ export default function NuevoEmpleadoPage() {
   const [rackCustom, setRackCustom] = useState(false)
   const [racksExistentes, setRacksExistentes] = useState<string[]>([])
 
+  const [crearCuenta, setCrearCuenta] = useState(false)
   const [formData, setFormData] = useState({
     nombre_completo: '',
     cargo: '',
     email: '',
+    password: '',
     telefono: '',
     direccion_ip: '',
     acceso_internet: true,
@@ -49,8 +51,11 @@ export default function NuevoEmpleadoPage() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { error } = await supabase.from('empleados').insert([
-        {
+      if (crearCuenta && formData.email && formData.password) {
+        // Crear usuario + empleado vía API
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) throw new Error('Sesión expirada')
+        const empleadoData = {
           nombre_completo: formData.nombre_completo.trim(),
           cargo: formData.cargo.trim() || null,
           email: formData.email.trim() || null,
@@ -62,12 +67,46 @@ export default function NuevoEmpleadoPage() {
           departamento: formData.departamento,
           rol: formData.rol,
           observaciones: formData.observaciones.trim() || null,
-          activo: true,
-        },
-      ])
-      if (error) throw error
-      toast.success('Empleado registrado correctamente')
-      router.push('/dashboard/empleados')
+        }
+        const res = await fetch('/api/admin/create-user', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            email: formData.email.trim(),
+            password: formData.password,
+            empleadoData,
+            rol: formData.rol,
+          }),
+        })
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || 'Error al crear usuario')
+        toast.success('Empleado y cuenta de acceso creados correctamente')
+        router.push('/dashboard/empleados')
+      } else {
+        // Solo empleado (sin cuenta)
+        const { error } = await supabase.from('empleados').insert([
+          {
+            nombre_completo: formData.nombre_completo.trim(),
+            cargo: formData.cargo.trim() || null,
+            email: formData.email.trim() || null,
+            telefono: formData.telefono.trim() || null,
+            direccion_ip: formData.direccion_ip.trim() || null,
+            acceso_internet: formData.acceso_internet,
+            acceso_llamadas: formData.acceso_llamadas,
+            rack: formData.rack.trim() || null,
+            departamento: formData.departamento,
+            rol: formData.rol,
+            observaciones: formData.observaciones.trim() || null,
+            activo: true,
+          },
+        ])
+        if (error) throw error
+        toast.success('Empleado registrado correctamente')
+        router.push('/dashboard/empleados')
+      }
     } catch (error: any) {
       toast.error(error.message || 'Error al registrar empleado')
     } finally {
@@ -145,6 +184,39 @@ export default function NuevoEmpleadoPage() {
                   placeholder="Ej: 555-1234"
                 />
               </div>
+            </div>
+
+            <div className="border-t pt-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Cuenta de acceso</h3>
+              <label className="flex items-center gap-2 cursor-pointer mb-4">
+                <input
+                  type="checkbox"
+                  checked={crearCuenta}
+                  onChange={(e) => setCrearCuenta(e.target.checked)}
+                  className="rounded"
+                />
+                <span>Crear cuenta de acceso (usuario y contraseña para ingresar al sistema)</span>
+              </label>
+              {crearCuenta && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <p className="text-sm text-gray-700 mb-2">
+                    Se usará el email anterior como usuario. Ingresa una contraseña (mínimo 6 caracteres):
+                  </p>
+                  <input
+                    type="password"
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    className="input-field max-w-md"
+                    placeholder="Contraseña"
+                    minLength={6}
+                  />
+                  {crearCuenta && (!formData.email || !formData.password || formData.password.length < 6) && (
+                    <p className="text-amber-600 text-sm mt-2">
+                      Email y contraseña (mín. 6 caracteres) son requeridos para crear la cuenta.
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className="border-t pt-6">
@@ -257,10 +329,13 @@ export default function NuevoEmpleadoPage() {
           <div className="flex space-x-4 mt-8">
             <button
               type="submit"
-              disabled={loading}
+              disabled={
+                loading ||
+                (crearCuenta && (!formData.email || !formData.password || formData.password.length < 6))
+              }
               className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Guardando...' : 'Registrar Empleado'}
+              {loading ? 'Guardando...' : crearCuenta ? 'Crear Empleado y Cuenta' : 'Registrar Empleado'}
             </button>
             <Link href="/dashboard/empleados" className="btn-secondary">
               Cancelar

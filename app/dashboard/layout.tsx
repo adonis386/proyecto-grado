@@ -148,13 +148,19 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   }, [])
 
   async function checkUser() {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        router.push('/login')
+      } else {
+        setUser(session.user)
+      }
+    } catch (err) {
+      console.error('[Dashboard] Error al verificar sesión:', err)
       router.push('/login')
-    } else {
-      setUser(session.user)
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   async function handleLogout() {
@@ -185,4 +191,3 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return <DashboardLayoutInner>{children}</DashboardLayoutInner>
 }
-

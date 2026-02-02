@@ -61,6 +61,9 @@ export default function Dashboard() {
     return <div className="text-center py-12">Cargando estadísticas...</div>
   }
 
+  const UMBRAL_STOCK_BAJO = 3
+  const stockBajo = stats.equiposDisponibles < UMBRAL_STOCK_BAJO
+
   const statCards = [
     {
       title: 'Total Equipos',
@@ -87,7 +90,7 @@ export default function Dashboard() {
       title: 'Disponibles',
       value: stats.equiposDisponibles,
       icon: '📦',
-      color: 'bg-yellow-500',
+      color: stockBajo ? 'bg-red-500' : 'bg-yellow-500',
       link: '/dashboard/equipos?estado=Disponible',
     },
   ]
@@ -100,6 +103,24 @@ export default function Dashboard() {
           Departamento de Informática - Control de Dispositivos y Equipos
         </p>
       </div>
+
+      {stockBajo && (
+        <Link href="/dashboard/equipos?estado=Disponible" className="block mb-4 sm:mb-6">
+          <div className="card border-l-4 border-red-500 bg-red-50 hover:bg-red-100 transition-colors">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl" aria-hidden>⚠️</span>
+              <div className="flex-1">
+                <h3 className="font-bold text-red-800">Equipos bajos en stock</h3>
+                <p className="text-sm text-red-700">
+                  Solo hay <strong>{stats.equiposDisponibles}</strong> equipo(s) disponible(s) (menos de {UMBRAL_STOCK_BAJO}). 
+                  Conviene revisar el inventario o registrar equipos disponibles.
+                </p>
+              </div>
+              <span className="text-red-600 font-semibold text-sm shrink-0">Ver disponibles →</span>
+            </div>
+          </div>
+        </Link>
+      )}
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
         {statCards.map((stat) => (

@@ -17,6 +17,10 @@ export default function EditarEmpleadoPage() {
   const [loadingData, setLoadingData] = useState(true)
   const [rackCustom, setRackCustom] = useState(false)
   const [racksExistentes, setRacksExistentes] = useState<string[]>([])
+  const [user_id, setUser_id] = useState<string | null>(null)
+  const [nuevaPassword, setNuevaPassword] = useState('')
+  const [crearCuenta, setCrearCuenta] = useState(false)
+  const [passwordCrear, setPasswordCrear] = useState('')
 
   const [formData, setFormData] = useState({
     nombre_completo: '',
@@ -77,6 +81,7 @@ export default function EditarEmpleadoPage() {
       if (data.rack && !RACKS_PREDEFINIDOS.includes(data.rack)) {
         setRackCustom(true)
       }
+      setUser_id(data.user_id || null)
     } catch (error: any) {
       toast.error('Error al cargar empleado')
       router.push('/dashboard/empleados')
@@ -86,6 +91,63 @@ export default function EditarEmpleadoPage() {
   }
 
   const todosLosRacks = [...RACKS_PREDEFINIDOS, ...racksExistentes.filter((r) => !RACKS_PREDEFINIDOS.includes(r))]
+
+  async function handleCrearCuenta() {
+    if (!formData.email || !passwordCrear || passwordCrear.length < 6) {
+      toast.error('Email y contraseña (mín. 6 caracteres) son requeridos')
+      return
+    }
+    setLoading(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Sesión expirada')
+      const res = await fetch('/api/admin/create-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({
+          email: formData.email.trim(),
+          password: passwordCrear,
+          empleadoId: params.id,
+          rol: formData.rol,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error')
+      toast.success('Cuenta creada correctamente')
+      setUser_id(data.userId)
+      setCrearCuenta(false)
+      setPasswordCrear('')
+    } catch (err: any) {
+      toast.error(err.message || 'Error al crear cuenta')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleCambiarPassword() {
+    if (!nuevaPassword || nuevaPassword.length < 6 || !user_id) {
+      toast.error('Contraseña mínima 6 caracteres')
+      return
+    }
+    setLoading(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) throw new Error('Sesión expirada')
+      const res = await fetch('/api/admin/reset-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ userId: user_id, newPassword: nuevaPassword }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error')
+      toast.success('Contraseña actualizada')
+      setNuevaPassword('')
+    } catch (err: any) {
+      toast.error(err.message || 'Error al cambiar contraseña')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -306,9 +368,54 @@ export default function EditarEmpleadoPage() {
                 rows={3}
               />
             </div>
+
+            {canManageEmpleados && (
+              <div className="border-t pt-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Cuenta de acceso</h3>
+                {!user_id ? (
+                  <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                    <p className="text-sm text-gray-700 mb-2">Este empleado no tiene cuenta para ingresar al sistema.</p>
+                    <label className="flex items-center gap-2 cursor-pointer mb-2">
+                      <input
+                        type="checkbox"
+                        checked={crearCuenta}
+                        onChange={(e) => setCrearCuenta(e.target.checked)}
+                        className="rounded"
+                      />
+                      <span>Crear cuenta de acceso ahora</span>
+                    </label>
+                    {crearCuenta && (
+                      <div className="mt-3">
+                        <p className="text-sm mb-1">Email: {formData.email || '(ingresa email arriba)'}</p>
+                        <input
+                          type="password"
+                          value={passwordCrear}
+                          onChange={(e) => setPasswordCrear(e.target.value)}
+                          className="input-field max-w-md"
+                          placeholder="Nueva contraseña (mín. 6 caracteres)"
+                          minLength={6}
+                        />
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <p className="text-sm text-gray-700 mb-2">Este empleado ya tiene cuenta. Para cambiar la contraseña:</p>
+                    <input
+                      type="password"
+                      value={nuevaPassword}
+                      onChange={(e) => setNuevaPassword(e.target.value)}
+                      className="input-field max-w-md"
+                      placeholder="Nueva contraseña (mín. 6 caracteres)"
+                      minLength={6}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
-          <div className="flex space-x-4 mt-8">
+          <div className="flex flex-wrap gap-4 mt-8">
             <button
               type="submit"
               disabled={loading}
@@ -316,6 +423,26 @@ export default function EditarEmpleadoPage() {
             >
               {loading ? 'Guardando...' : 'Actualizar'}
             </button>
+            {crearCuenta && !user_id && formData.email && passwordCrear.length >= 6 && (
+              <button
+                type="button"
+                onClick={handleCrearCuenta}
+                disabled={loading}
+                className="btn-secondary"
+              >
+                Crear cuenta ahora
+              </button>
+            )}
+            {user_id && nuevaPassword.length >= 6 && (
+              <button
+                type="button"
+                onClick={handleCambiarPassword}
+                disabled={loading}
+                className="btn-secondary"
+              >
+                Cambiar contraseña
+              </button>
+            )}
             <Link href={`/dashboard/empleados/${params.id}`} className="btn-secondary">
               Cancelar
             </Link>

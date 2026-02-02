@@ -22,14 +22,21 @@ export function useRol(userId: string | undefined) {
 
     async function loadRol() {
       try {
-        const { data } = await supabase
+        const { data, error } = await supabase
           .from('empleados')
           .select('rol')
           .eq('user_id', userId)
           .eq('activo', true)
           .single()
-        setRol((data?.rol as RolUsuario) ?? null)
-      } catch {
+        if (error) {
+          // Sin empleado vinculado o tabla no existe
+          console.warn('[useRol]', error.message)
+          setRol(null)
+        } else {
+          setRol((data?.rol as RolUsuario) ?? null)
+        }
+      } catch (err) {
+        console.error('[useRol]', err)
         setRol(null)
       } finally {
         setLoading(false)
