@@ -11,7 +11,7 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'GEMINI_API_KEY no configurada en variables de entorno' },
+        { error: 'GEMINI_API_KEY no configurada en variables de entorno !' },
         { status: 500 }
       )
     }
