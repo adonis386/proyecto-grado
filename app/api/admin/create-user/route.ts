@@ -32,17 +32,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verificar token y obtener user_id
-    const supabase = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    )
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token)
+    // Verificar token y obtener user_id (usando admin para evitar límites de RLS)
+    const { data: { user }, error: userError } = await supabaseAdmin.auth.getUser(token)
     if (userError || !user) {
       return NextResponse.json({ error: 'Sesión inválida' }, { status: 401 })
     }
 
-    const { data: empleado } = await supabase
+    // Consultar rol con admin (bypass RLS) para que la verificación sea fiable
+    const { data: empleado } = await supabaseAdmin
       .from('empleados')
       .select('rol')
       .eq('user_id', user.id)

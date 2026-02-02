@@ -30,7 +30,7 @@ function DashboardContent({
     ...(canManageEmpleados ? [{ href: '/dashboard/empleados', label: 'Empleados', icon: '👥' }] : []),
     { href: '/dashboard/equipos', label: 'Equipos', icon: '💻' },
     { href: '/dashboard/tickets', label: 'Tickets', icon: '🎫' },
-    ...(canManageEmpleados ? [{ href: '/dashboard/reportes', label: 'Reportes', icon: '📊' }] : []), // BR-03: solo Gerencia/Admin
+    { href: '/dashboard/reportes', label: 'Reportes', icon: '📊' },
     { href: '/dashboard/guias', label: 'Guías', icon: '📖' },
     { href: '/dashboard/cableado', label: 'Cableado', icon: '🔌' },
     { href: '/dashboard/inventario', label: 'Inventario', icon: '📦' },
@@ -148,19 +148,13 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
   }, [])
 
   async function checkUser() {
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        router.push('/login')
-      } else {
-        setUser(session.user)
-      }
-    } catch (err) {
-      console.error('[Dashboard] Error al verificar sesión:', err)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
       router.push('/login')
-    } finally {
-      setLoading(false)
+    } else {
+      setUser(session.user)
     }
+    setLoading(false)
   }
 
   async function handleLogout() {
@@ -191,3 +185,4 @@ function DashboardLayoutInner({ children }: { children: React.ReactNode }) {
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return <DashboardLayoutInner>{children}</DashboardLayoutInner>
 }
+
